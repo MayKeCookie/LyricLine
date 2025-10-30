@@ -189,181 +189,470 @@
       </div>
     </div>
 
-    <!-- 编辑区域 - 横向布局 -->
-    <div class="bg-white rounded-xl shadow p-5 section-transition hover:shadow-md mb-6">
-      <div class="flex justify-between items-center mb-4">
-        <h2 class="text-lg font-semibold text-neutral flex items-center">
-          <i class="fa fa-edit text-primary mr-2"></i>编辑区域
+    <!-- 主内容区域布局 - 重新设计 -->
+    <div class="space-y-6">
+      <!-- 第一部分：歌词输入与歌曲信息区域（顶部） -->
+      <div class="bg-white rounded-xl shadow p-5 section-transition hover:shadow-md">
+        <h2 class="text-lg font-semibold text-neutral flex items-center mb-4">
+          <i class="fa fa-file-text text-primary mr-2"></i>歌词输入与歌曲信息
         </h2>
-        <div class="flex items-center space-x-3">
-          <!-- 全局音调控制 -->
-          <div class="flex items-center space-x-2 bg-light px-2 py-1 rounded-md">
-            <button id="decreaseToneBtn" class="p-1.5 rounded hover:bg-gray-200 text-gray-700">
-              <i class="fa fa-minus"></i>
-            </button>
-            <span id="globalToneDisplay" class="text-sm font-medium w-10 text-center">±0</span>
-            <button id="increaseToneBtn" class="p-1.5 rounded hover:bg-gray-200 text-gray-700">
-              <i class="fa fa-plus"></i>
-            </button>
-            <button id="resetToneBtn" class="text-xs text-gray-500 hover:text-gray-700 px-1">重置</button>
+        
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <!-- 左侧：歌词输入 -->
+          <div>
+            <div class="flex justify-between items-center mb-3">
+              <div class="flex items-center space-x-2 bg-light px-2 py-1 rounded-md">
+                <button id="decreaseToneBtn" class="p-1.5 rounded hover:bg-gray-200 text-gray-700">
+                  <i class="fa fa-minus"></i>
+                </button>
+                <span id="globalToneDisplay" class="text-sm font-medium w-10 text-center">±0</span>
+                <button id="increaseToneBtn" class="p-1.5 rounded hover:bg-gray-200 text-gray-700">
+                  <i class="fa fa-plus"></i>
+                </button>
+                <button id="resetToneBtn" class="text-xs text-gray-500 hover:text-gray-700 px-1">重置</button>
+              </div>
+              <button id="splitLyricsBtn" class="bg-primary text-white px-3 py-1 rounded-md text-sm btn-hover">
+                <i class="fa fa-magic mr-1"></i>分割歌词
+              </button>
+            </div>
+            
+            <div class="mb-3">
+              <textarea id="lyricsInput" placeholder="请输入或粘贴歌词，每行一句..." 
+                class="w-full h-48 p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 resize-none"></textarea>
+            </div>
+            <div class="flex space-x-2">
+              <button id="clearLyricsBtn" class="flex-1 bg-gray-200 text-gray-700 px-3 py-2 rounded-md text-sm btn-hover">
+                <i class="fa fa-trash mr-1"></i>清空
+              </button>
+              <button id="sampleLyricsBtn" class="flex-1 bg-accent text-white px-3 py-2 rounded-md text-sm btn-hover">
+                <i class="fa fa-file-text-o mr-1"></i>示例歌词
+              </button>
+            </div>
           </div>
-          <button id="splitLyricsBtn" class="bg-primary text-white px-3 py-1 rounded-md text-sm btn-hover">
-            <i class="fa fa-magic mr-1"></i>分割歌词
-          </button>
-          <button id="exportDataBtn" class="bg-primary text-white px-3 py-1 rounded-md text-sm btn-hover">
-            <i class="fa fa-download mr-1"></i>导出数据
-          </button>
-          <label id="importDataBtn" class="cursor-pointer bg-gray-700 text-white px-3 py-1 rounded-md text-sm btn-hover inline-block">
-            <i class="fa fa-upload mr-1"></i>导入数据
-            <input type="file" id="dataFileInput" accept=".json" class="hidden">
-          </label>
+          
+          <!-- 右侧：歌曲信息 -->
+          <div>
+            <!-- 歌曲信息卡片 -->
+            <div class="bg-gray-50 rounded-lg p-4 mb-4 border border-gray-100">
+              <h3 class="text-sm font-medium text-gray-700 mb-3 flex items-center">
+                <i class="fa fa-music text-primary/80 mr-2"></i>基本信息
+              </h3>
+              <div class="space-y-3">
+                <div class="space-y-1">
+                  <label for="songTitleInput" class="block text-xs text-gray-500 font-medium">歌名</label>
+                  <input type="text" id="songTitleInput" placeholder="请输入歌名" class="w-full p-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all bg-white">
+                </div>
+                <div class="space-y-1">
+                  <label for="singerInput" class="block text-xs text-gray-500 font-medium">歌手</label>
+                  <input type="text" id="singerInput" placeholder="请输入歌手名" class="w-full p-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all bg-white">
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div class="space-y-1">
+                    <label for="composerInput" class="block text-xs text-gray-500 font-medium">作曲</label>
+                    <input type="text" id="composerInput" placeholder="请输入作曲者" class="w-full p-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all bg-white">
+                  </div>
+                  <div class="space-y-1">
+                    <label for="lyricistInput" class="block text-xs text-gray-500 font-medium">作词</label>
+                    <input type="text" id="lyricistInput" placeholder="请输入作词者" class="w-full p-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all bg-white">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
       
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <!-- 歌词输入区域 -->
-        <div>
-          <div class="mb-3">
-            <textarea id="lyricsInput" placeholder="请输入或粘贴歌词，每行一句..." 
-              class="w-full h-64 p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 resize-none"></textarea>
+      <!-- 第二部分：预览区域与简谱编辑区域（中间） -->
+      <div class="bg-white rounded-xl shadow p-5 section-transition hover:shadow-md">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <!-- 左侧：预览区域 -->
+          <div>
+            <div class="flex justify-between items-center mb-4">
+              <h2 class="text-lg font-semibold text-neutral flex items-center">
+                <i class="fa fa-eye text-primary mr-2"></i>预览区域
+              </h2>
+              <div class="flex items-center space-x-2">
+                <span class="text-sm text-gray-600">宽高比:</span>
+                <select id="aspectRatioSelect" class="p-1 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-primary/50">
+                  <option value="16:9">16:9</option>
+                  <option value="4:3" selected>4:3</option>
+                  <option value="3:2">3:2</option>
+                  <option value="1:1">1:1</option>
+                  <option value="custom">自定义</option>
+                </select>
+              </div>
+            </div>
+            
+            <!-- 自定义宽高比输入框 -->
+            <div id="customRatioInputs" class="hidden mb-3 flex items-center space-x-2">
+              <input type="number" id="widthInput" placeholder="宽度" min="100" value="800" class="w-24 p-1 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-primary/50">
+              <span class="text-gray-600">:</span>
+              <input type="number" id="heightInput" placeholder="高度" min="100" value="600" class="w-24 p-1 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-primary/50">
+              <button id="applyRatioBtn" class="bg-primary text-white px-2 py-1 rounded-md text-xs btn-hover">
+                <i class="fa fa-check mr-1"></i>应用
+              </button>
+            </div>
+            
+            <div id="previewContainer" class="relative">
+              <div id="previewArea" class="border border-gray-200 rounded-lg p-4 bg-light aspect-[4/3]">
+                <div class="text-gray-500 text-center py-10">
+                  <p>编辑后的简谱将在这里显示</p>
+                </div>
+              </div>
+            </div>
           </div>
-          <div class="flex space-x-2">
-            <button id="clearLyricsBtn" class="flex-1 bg-gray-200 text-gray-700 px-3 py-2 rounded-md text-sm btn-hover">
-              <i class="fa fa-trash mr-1"></i>清空
-            </button>
-            <button id="sampleLyricsBtn" class="flex-1 bg-accent text-white px-3 py-2 rounded-md text-sm btn-hover">
-              <i class="fa fa-file-text-o mr-1"></i>示例歌词
+          
+          <!-- 右侧：简谱编辑区域 -->
+          <div>
+            <h2 class="text-lg font-semibold text-neutral flex items-center mb-4">
+              <i class="fa fa-edit text-primary mr-2"></i>简谱编辑区域
+            </h2>
+            <div id="notesEditor" class="space-y-3 max-h-[60vh] overflow-y-auto p-2">
+              <div class="text-gray-500 text-center py-10 border-2 border-dashed border-gray-200 rounded-lg">
+                <p>请先输入歌词并点击"分割歌词"按钮</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- 第三部分：导出与预览设置（底部） -->
+      <div class="bg-white rounded-xl shadow p-5 section-transition hover:shadow-md">
+        <!-- 标签页标题 -->
+        <div class="flex border-b border-gray-200 bg-gradient-to-r from-primary/5 to-white mb-4">
+          <button id="exportTabBtn" class="px-5 py-2.5 text-sm font-medium text-primary border-b-2 border-primary focus:outline-none flex items-center">
+            <i class="fa fa-download mr-2"></i>导出设置
+          </button>
+          <button id="previewTabBtn" class="px-5 py-2.5 text-sm font-medium text-gray-600 hover:text-primary focus:outline-none flex items-center">
+            <i class="fa fa-sliders mr-2"></i>预览设置
+          </button>
+        </div>
+        
+        <!-- 导出设置标签页内容 -->
+        <div id="exportTabContent">
+          <div class="flex justify-end mb-4">
+            <div class="space-x-2">
+              <button id="exportImageBtn" class="bg-secondary text-white px-3 py-1.5 rounded-md text-sm font-medium btn-hover transition-all hover:shadow-md">
+                <i class="fa fa-image mr-1"></i>导出当前页
+              </button>
+              <button id="exportAllBtn" class="bg-accent text-white px-3 py-1.5 rounded-md text-sm font-medium btn-hover transition-all hover:shadow-md">
+                <i class="fa fa-files-o mr-1"></i>导出全部
+              </button>
+            </div>
+          </div>
+          
+          <!-- 导出选项卡片 -->
+          <div class="bg-gray-50 rounded-lg p-4 border border-gray-100">
+            <h3 class="text-sm font-medium text-gray-700 mb-3 flex items-center">
+              <i class="fa fa-cog text-primary/80 mr-2"></i>导出选项
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div class="space-y-1">
+                <label for="exportFormatSelect" class="block text-xs text-gray-500 font-medium">导出格式</label>
+                <select id="exportFormatSelect" class="w-full p-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all bg-white">
+                  <option value="png" selected>PNG</option>
+                  <option value="jpg">JPG</option>
+                  <option value="pdf">PDF (Beta)</option>
+                </select>
+              </div>
+              
+              <div class="space-y-1">
+                <label for="resolutionSelect" class="block text-xs text-gray-500 font-medium">导出分辨率</label>
+                <select id="resolutionSelect" class="w-full p-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all bg-white">
+                  <option value="1">标准 (1x)</option>
+                  <option value="2" selected>高清 (2x)</option>
+                  <option value="3">超清 (3x)</option>
+                </select>
+              </div>
+              
+              <div class="space-y-1">
+                <label for="linesPerPageInput" class="block text-xs text-gray-500 font-medium">每页行数</label>
+                <div class="flex items-center space-x-2">
+                  <input type="number" id="linesPerPageInput" min="1" value="4" class="w-24 p-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all bg-white">
+                  <span class="text-gray-600">行/页</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- 底部操作按钮 -->
+          <div class="flex justify-between items-center border-t border-gray-100 pt-4 mt-4">
+            <div class="flex space-x-2">
+              <button id="exportDataBtn" class="bg-primary text-white px-3 py-1.5 rounded-md text-sm btn-hover">
+                <i class="fa fa-download mr-1"></i>导出数据
+              </button>
+              <label id="importDataBtn" class="cursor-pointer bg-gray-700 text-white px-3 py-1.5 rounded-md text-sm btn-hover inline-block">
+                <i class="fa fa-upload mr-1"></i>导入数据
+                <input type="file" id="dataFileInput" accept=".json" class="hidden">
+              </label>
+            </div>
+            <button id="applySettingsBtn" class="bg-primary text-white px-5 py-1.5 rounded-md font-medium btn-hover transition-all hover:shadow-md hover:bg-primary/90">
+              <i class="fa fa-check mr-1.5"></i>应用设置
             </button>
           </div>
         </div>
-
-        <!-- 简谱编辑区域 -->
-        <div class="lg:col-span-2">
-          <div id="notesEditor" class="space-y-3 max-h-[60vh] overflow-y-auto p-2">
-            <div class="text-gray-500 text-center py-10 border-2 border-dashed border-gray-200 rounded-lg">
-              <p>请先输入歌词并点击"分割歌词"按钮</p>
+        
+        <!-- 预览设置标签页内容 - 初始隐藏 -->
+        <div id="previewTabContent" class="hidden">
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <!-- 左侧：字体和颜色设置 -->
+            <div>
+              <!-- 字体设置卡片 -->
+              <div class="bg-gray-50 rounded-lg p-4 mb-5 border border-gray-100">
+                <h3 class="text-sm font-medium text-gray-700 mb-3 flex items-center">
+                  <i class="fa fa-font text-primary/80 mr-2"></i>字体设置
+                </h3>
+                <div class="space-y-4">
+                  <!-- 字体选择 -->
+                  <div class="space-y-1">
+                    <label for="fontSelect" class="block text-xs text-gray-500 font-medium">字体选择</label>
+                    <select id="fontSelect" class="w-full min-w-[200px] p-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all bg-white hover:border-gray-300">
+                      <option value="'Maple Mono NF CN', monospace" selected>Maple Mono NF CN (默认)</option>
+                      <option value="'Otsutome_font', sans-serif">Otsutome_font</option>
+                      <option value="'YFFYT', sans-serif">YFFYT</option>
+                      <option value="'Swei Sans CJK SC Regular', sans-serif">Swei Sans CJK SC</option>
+                      <option value="'Fusion Pixel 12px M latin', monospace">Fusion Pixel 12px M latin</option>
+                      <option value="'平方手书体', sans-serif">平方手书体</option>
+                    </select>
+                  </div>
+                  
+                  <!-- 字体大小和加粗设置 -->
+                  <div class="space-y-1">
+                    <label class="block text-xs text-gray-500 font-medium">字体大小 <span id="fontSizeDisplay" class="text-primary font-medium">16</span>px</label>
+                    <div class="flex items-center gap-2">
+                      <input type="range" id="fontSizeSlider" min="12" max="28" value="16" step="1"
+                        class="flex-1 h-2.5 bg-gray-200 rounded-lg appearance-none cursor-pointer transition-all focus:outline-none focus:ring-2 focus:ring-primary/50">
+                      <button id="toggleBoldBtn" class="h-8 w-8 flex items-center justify-center border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-primary/50 hover:bg-gray-50 transition-all" title="字体加粗">
+                        <i class="fa fa-bold text-gray-600"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- 颜色设置卡片 -->
+              <div class="bg-gray-50 rounded-lg p-4 border border-gray-100">
+                <h3 class="text-sm font-medium text-gray-700 mb-3 flex items-center">
+                  <i class="fa fa-paint-brush text-primary/80 mr-2"></i>颜色设置
+                </h3>
+                <div class="space-y-4">
+                  <!-- 音符颜色 -->
+                  <div class="space-y-1">
+                    <label for="noteColorPicker" class="block text-xs text-gray-500 font-medium">音符颜色</label>
+                    <div class="flex items-center space-x-2">
+                      <input type="color" id="noteColorPicker" value="#3B82F6" class="w-10 h-10 border-0 rounded-full cursor-pointer transition-transform hover:scale-105 shadow-sm">
+                      <select id="noteColorSelect" class="flex-1 p-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all bg-white hover:border-gray-300">
+                        <option value="#3B82F6">蓝色</option>
+                        <option value="#10B981">绿色</option>
+                        <option value="#EF4444">红色</option>
+                        <option value="#8B5CF6">紫色</option>
+                        <option value="#F59E0B">橙色</option>
+                        <option value="#1F2937">黑色</option>
+                      </select>
+                    </div>
+                  </div>
+                  
+                  <!-- 歌词颜色 -->
+                  <div class="space-y-1">
+                    <label for="textColorPicker" class="block text-xs text-gray-500 font-medium">歌词颜色</label>
+                    <div class="flex items-center space-x-2">
+                      <input type="color" id="textColorPicker" value="#1F2937" class="w-10 h-10 border-0 rounded-full cursor-pointer transition-transform hover:scale-105 shadow-sm">
+                      <select id="textColorSelect" class="flex-1 p-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all bg-white hover:border-gray-300">
+                        <option value="#1F2937">黑色</option>
+                        <option value="#3B82F6">蓝色</option>
+                        <option value="#10B981">绿色</option>
+                        <option value="#EF4444">红色</option>
+                        <option value="#8B5CF6">紫色</option>
+                        <option value="#F59E0B">橙色</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <!-- 右侧：背景设置 -->
+            <div>
+              <h3 class="text-sm font-medium text-gray-700 mb-3 flex items-center">
+                <i class="fa fa-images text-primary/80 mr-2"></i>背景设置
+              </h3>
+              
+              <!-- 预设背景选择 -->
+              <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-4">
+                <div class="border-2 border-transparent rounded-lg p-1 cursor-pointer hover:border-primary hover:shadow-md transition-all transform hover:scale-[1.02] bg-white" data-bg="none">
+                  <div class="w-full aspect-[4/3] bg-white rounded border border-gray-200 flex items-center justify-center shadow-sm">
+                    <span class="text-xs text-gray-500">无背景</span>
+                  </div>
+                </div>
+                <div class="border-2 border-transparent rounded-lg p-1 cursor-pointer hover:border-primary hover:shadow-md transition-all transform hover:scale-[1.02] bg-white" data-bg="简谱背景图片1.png">
+                  <div class="w-full aspect-[4/3] bg-cover bg-center rounded border border-gray-100 shadow-sm" style="background-image: url('简谱背景图片1.png');"></div>
+                </div>
+                <div class="border-2 border-transparent rounded-lg p-1 cursor-pointer hover:border-primary hover:shadow-md transition-all transform hover:scale-[1.02] bg-white" data-bg="简谱背景图片2.png">
+                  <div class="w-full aspect-[4/3] bg-cover bg-center rounded border border-gray-100 shadow-sm" style="background-image: url('简谱背景图片2.png');"></div>
+                </div>
+                <div class="border-2 border-transparent rounded-lg p-1 cursor-pointer hover:border-primary hover:shadow-md transition-all transform hover:scale-[1.02] bg-white" data-bg="简谱背景图片3.png">
+                  <div class="w-full aspect-[4/3] bg-cover bg-center rounded border border-gray-100 shadow-sm" style="background-image: url('简谱背景图片3.png');"></div>
+                </div>
+                <div class="border-2 border-transparent rounded-lg p-1 cursor-pointer hover:border-primary hover:shadow-md transition-all transform hover:scale-[1.02] bg-white" data-bg="简谱背景图片4.png">
+                  <div class="w-full aspect-[4/3] bg-cover bg-center rounded border border-gray-100 shadow-sm" style="background-image: url('简谱背景图片4.png');"></div>
+                </div>
+                <div class="border-2 border-transparent rounded-lg p-1 cursor-pointer hover:border-primary hover:shadow-md transition-all transform hover:scale-[1.02] bg-white" data-bg="简谱背景图片5.png">
+                  <div class="w-full aspect-[4/3] bg-cover bg-center rounded border border-gray-100 shadow-sm" style="background-image: url('简谱背景图片5.png');"></div>
+                </div>
+              </div>
+              
+              <!-- 自定义背景上传 -->
+              <div class="bg-gray-50 rounded-lg border border-gray-200 p-3">
+                <div class="flex flex-col gap-2">
+                  <div class="relative">
+                    <input type="file" id="bgImageUpload" accept="image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
+                    <div class="border-2 border-dashed border-gray-300 rounded-lg p-3 text-center bg-white hover:bg-gray-50 transition-colors">
+                      <i class="fa fa-picture-o text-gray-400 text-lg mb-1"></i>
+                      <p class="text-xs text-gray-600">点击上传背景图片</p>
+                    </div>
+                  </div>
+                  <button id="clearBgBtn" class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg text-sm font-medium transition-all hover:bg-gray-200 flex items-center justify-center shadow-sm">
+                    <i class="fa fa-times mr-1.5"></i>清除背景
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-    
-    <!-- 预览与导出区域 -->
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-      <!-- 预览区域 -->
-      <div class="lg:col-span-2 bg-white rounded-xl shadow p-5 section-transition hover:shadow-md">
-        <div class="flex justify-between items-center mb-4">
-          <h2 class="text-lg font-semibold text-neutral flex items-center">
-            <i class="fa fa-eye text-primary mr-2"></i>预览区域
-          </h2>
-          <div class="flex items-center space-x-2">
-            <span class="text-sm text-gray-600">宽高比:</span>
-            <select id="aspectRatioSelect" class="p-1 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-primary/50">
-              <option value="16:9">16:9</option>
-              <option value="4:3" selected>4:3</option>
-              <option value="3:2">3:2</option>
-              <option value="1:1">1:1</option>
-              <option value="custom">自定义</option>
-            </select>
-          </div>
-        </div>
         
-        <!-- 自定义宽高比输入框 -->
-        <div id="customRatioInputs" class="hidden mb-3 flex items-center space-x-2">
-          <input type="number" id="widthInput" placeholder="宽度" min="100" value="800" class="w-24 p-1 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-primary/50">
-          <span class="text-gray-600">:</span>
-          <input type="number" id="heightInput" placeholder="高度" min="100" value="600" class="w-24 p-1 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-primary/50">
-          <button id="applyRatioBtn" class="bg-primary text-white px-2 py-1 rounded-md text-xs btn-hover">
-            <i class="fa fa-check mr-1"></i>应用
-          </button>
-        </div>
+        <script>
+          // 标签页切换功能
+          document.addEventListener('DOMContentLoaded', function() {
+            const exportTabBtn = document.getElementById('exportTabBtn');
+            const previewTabBtn = document.getElementById('previewTabBtn');
+            
+            const exportTabContent = document.getElementById('exportTabContent');
+            const previewTabContent = document.getElementById('previewTabContent');
+            
+            // 重置所有标签页样式和内容显示
+            function resetTabs() {
+              // 重置所有按钮样式
+              [exportTabBtn, previewTabBtn].forEach(btn => {
+                btn.classList.remove('text-primary', 'border-b-2', 'border-primary');
+                btn.classList.add('text-gray-600');
+              });
+              
+              // 隐藏所有内容区域
+              [exportTabContent, previewTabContent].forEach(content => {
+                content.classList.add('hidden');
+              });
+            }
+            
+            // 切换到导出设置标签
+            exportTabBtn.addEventListener('click', function() {
+              resetTabs();
+              exportTabBtn.classList.add('text-primary', 'border-b-2', 'border-primary');
+              exportTabBtn.classList.remove('text-gray-600');
+              exportTabContent.classList.remove('hidden');
+            });
+            
+            // 切换到预览设置标签
+            previewTabBtn.addEventListener('click', function() {
+              resetTabs();
+              previewTabBtn.classList.add('text-primary', 'border-b-2', 'border-primary');
+              previewTabBtn.classList.remove('text-gray-600');
+              previewTabContent.classList.remove('hidden');
+            });
+          });
+        </script>
         
-        <div id="previewContainer" class="relative">
-          <div id="previewArea" class="border border-gray-200 rounded-lg p-4 bg-light aspect-[4/3]">
-            <div class="text-gray-500 text-center py-10">
-              <p>编辑后的简谱将在这里显示</p>
+        <!-- 导出设置标签页内容 -->
+        <div id="exportTabContent">
+          <div class="p-5">
+            <div class="flex justify-end mb-4">
+              <div class="space-x-2">
+                <button id="exportImageBtn" class="bg-secondary text-white px-3 py-1.5 rounded-md text-sm font-medium btn-hover transition-all hover:shadow-md">
+                  <i class="fa fa-image mr-1"></i>导出当前页
+                </button>
+                <button id="exportAllBtn" class="bg-accent text-white px-3 py-1.5 rounded-md text-sm font-medium btn-hover transition-all hover:shadow-md">
+                  <i class="fa fa-files-o mr-1"></i>导出全部
+                </button>
+              </div>
             </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- 导出区域 -->
-      <div class="bg-white rounded-xl shadow p-5 section-transition hover:shadow-md">
-        <div class="flex justify-between items-center mb-4">
-          <h2 class="text-lg font-semibold text-neutral flex items-center">
-            <i class="fa fa-download text-primary mr-2"></i>导出设置
-          </h2>
-          <div class="space-x-2">
-            <button id="exportImageBtn" class="bg-secondary text-white px-3 py-1 rounded-md text-sm btn-hover">
-              <i class="fa fa-image mr-1"></i>导出当前页
-            </button>
-            <button id="exportAllBtn" class="bg-accent text-white px-3 py-1 rounded-md text-sm btn-hover">
-              <i class="fa fa-files-o mr-1"></i>导出全部
-            </button>
-
-          </div>
-        </div>
-        
-        <div class="space-y-4">
-          <!-- 歌曲信息 -->
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">歌名</label>
-              <input type="text" id="songTitleInput" placeholder="请输入歌名" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50">
+            
+            <!-- 歌曲信息卡片 -->
+            <div class="bg-gray-50 rounded-lg p-4 mb-5 border border-gray-100">
+              <h3 class="text-sm font-medium text-gray-700 mb-3 flex items-center">
+                <i class="fa fa-music text-primary/80 mr-2"></i>歌曲信息
+              </h3>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="space-y-1">
+                  <label for="songTitleInput" class="block text-xs text-gray-500 font-medium">歌名</label>
+                  <input type="text" id="songTitleInput" placeholder="请输入歌名" class="w-full p-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all bg-white">
+                </div>
+                <div class="space-y-1">
+                  <label for="singerInput" class="block text-xs text-gray-500 font-medium">歌手</label>
+                  <input type="text" id="singerInput" placeholder="请输入歌手名" class="w-full p-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all bg-white">
+                </div>
+              </div>
             </div>
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">歌手</label>
-              <input type="text" id="singerInput" placeholder="请输入歌手名" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50">
+            
+            <!-- 导出选项卡片 -->
+            <div class="bg-gray-50 rounded-lg p-4 border border-gray-100">
+              <h3 class="text-sm font-medium text-gray-700 mb-3 flex items-center">
+                <i class="fa fa-cog text-primary/80 mr-2"></i>导出选项
+              </h3>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- 导出格式 -->
+                <div class="space-y-1">
+                  <label for="exportFormatSelect" class="block text-xs text-gray-500 font-medium">导出格式</label>
+                  <select id="exportFormatSelect" class="w-full p-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all bg-white">
+                    <option value="png" selected>PNG</option>
+                    <option value="jpg">JPG</option>
+                    <option value="pdf">PDF (Beta)</option>
+                  </select>
+                </div>
+                
+                <!-- 导出分辨率 -->
+                <div class="space-y-1">
+                  <label for="resolutionSelect" class="block text-xs text-gray-500 font-medium">导出分辨率</label>
+                  <select id="resolutionSelect" class="w-full p-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all bg-white">
+                    <option value="1">标准 (1x)</option>
+                    <option value="2" selected>高清 (2x)</option>
+                    <option value="3">超清 (3x)</option>
+                  </select>
+                </div>
+              </div>
             </div>
-          </div>
-          
-          <!-- 导出格式 -->
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">导出格式</label>
-            <select id="exportFormatSelect" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50">
-              <option value="png" selected>PNG</option>
-              <option value="jpg">JPG</option>
-              <option value="pdf">PDF (Beta)</option>
-            </select>
-          </div>
-          
-          <!-- 导出分辨率 -->
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">导出分辨率</label>
-            <select id="resolutionSelect" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50">
-              <option value="1">标准 (1x)</option>
-              <option value="2" selected>高清 (2x)</option>
-              <option value="3">超清 (3x)</option>
-            </select>
           </div>
           
           <!-- 分页设置 -->
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">每页行数</label>
-            <div class="flex items-center space-x-2">
-              <input type="number" id="linesPerPageInput" min="1" value="4" class="w-24 p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50">
-              <span class="text-gray-600">行/页</span>
-
-            </div>
-          </div>
-          
-          <!-- 当前页码 -->
-          <div id="pageInfo" class="hidden">
-            <div class="flex items-center justify-between">
-              <span class="text-sm text-gray-600">当前显示: <span id="currentPageDisplay">1</span>/<span id="totalPagesDisplay">1</span></span>
-              <div class="flex space-x-1">
-                <button id="prevPageBtn" class="p-1 rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed">
-                  <i class="fa fa-chevron-left"></i>
-                </button>
-                <button id="nextPageBtn" class="p-1 rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed">
-                  <i class="fa fa-chevron-right"></i>
-                </button>
+          <div class="border-t border-gray-100 p-5">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="space-y-1">
+                <label for="linesPerPageInput" class="block text-xs text-gray-500 font-medium">每页行数</label>
+                <div class="flex items-center space-x-2">
+                  <input type="number" id="linesPerPageInput" min="1" value="4" class="w-24 p-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all bg-white">
+                  <span class="text-gray-600">行/页</span>
+                </div>
+              </div>
+              
+              <!-- 当前页码 -->
+              <div id="pageInfo" class="hidden">
+                <div class="flex items-center justify-between">
+                  <span class="text-sm text-gray-600">当前显示: <span id="currentPageDisplay">1</span>/<span id="totalPagesDisplay">1</span></span>
+                  <div class="flex space-x-1">
+                    <button id="prevPageBtn" class="p-1 rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed">
+                      <i class="fa fa-chevron-left"></i>
+                    </button>
+                    <button id="nextPageBtn" class="p-1 rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed">
+                      <i class="fa fa-chevron-right"></i>
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
           
           <!-- 导出状态 -->
-          <div id="exportStatus" class="hidden">
+          <div id="exportStatus" class="hidden px-5 pb-5">
             <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
               <span class="block sm:inline">图片导出成功！已导出 <span id="exportedCount">0</span> 张图片</span>
               <button class="absolute top-0 bottom-0 right-0 px-4 py-3" onclick="this.parentElement.classList.add('hidden')">
@@ -372,140 +661,161 @@
             </div>
           </div>
         </div>
-      </div>
-    </div>
+        
+        <!-- 预览设置标签页内容 - 初始隐藏 -->
+        <div id="previewTabContent" class="hidden">
+          <div class="p-5">
+            <!-- 字体设置卡片 -->
+            <div class="bg-gray-50 rounded-lg p-4 mb-5 border border-gray-100">
+              <h3 class="text-sm font-medium text-gray-700 mb-3 flex items-center">
+                <i class="fa fa-font text-primary/80 mr-2"></i>字体设置
+              </h3>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- 字体选择 -->
+                <div class="space-y-1">
+                  <label for="fontSelect" class="block text-xs text-gray-500 font-medium">字体选择</label>
+                  <select id="fontSelect" class="w-full min-w-[200px] p-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all bg-white hover:border-gray-300">
+                    <option value="'Maple Mono NF CN', monospace" selected>Maple Mono NF CN (默认)</option>
+                    <option value="'Otsutome_font', sans-serif">Otsutome_font</option>
+                    <option value="'YFFYT', sans-serif">YFFYT</option>
+                    <option value="'Swei Sans CJK SC Regular', sans-serif">Swei Sans CJK SC</option>
+                    <option value="'Fusion Pixel 12px M latin', monospace">Fusion Pixel 12px M latin</option>
+                    <option value="'平方手书体', sans-serif">平方手书体</option>
+                  </select>
+                </div>
+                
+                <!-- 字体大小和加粗设置 -->
+                <div class="space-y-1">
+                  <label class="block text-xs text-gray-500 font-medium">字体大小 <span id="fontSizeDisplay" class="text-primary font-medium">16</span>px</label>
+                  <div class="flex items-center gap-2">
+                    <input type="range" id="fontSizeSlider" min="12" max="28" value="16" step="1"
+                      class="flex-1 h-2.5 bg-gray-200 rounded-lg appearance-none cursor-pointer transition-all focus:outline-none focus:ring-2 focus:ring-primary/50">
+                    <button id="toggleBoldBtn" class="h-8 w-8 flex items-center justify-center border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-primary/50 hover:bg-gray-50 transition-all" title="字体加粗">
+                      <i class="fa fa-bold text-gray-600"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <!-- 颜色设置卡片 -->
+            <div class="bg-gray-50 rounded-lg p-4 border border-gray-100">
+              <h3 class="text-sm font-medium text-gray-700 mb-3 flex items-center">
+                <i class="fa fa-paint-brush text-primary/80 mr-2"></i>颜色设置
+              </h3>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- 音符颜色 -->
+                <div class="space-y-1">
+                  <label for="noteColorPicker" class="block text-xs text-gray-500 font-medium">音符颜色</label>
+                  <div class="flex items-center space-x-2">
+                    <input type="color" id="noteColorPicker" value="#3B82F6" class="w-10 h-10 border-0 rounded-full cursor-pointer transition-transform hover:scale-105 shadow-sm">
+                    <select id="noteColorSelect" class="flex-1 p-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all bg-white hover:border-gray-300">
+                      <option value="#3B82F6">蓝色</option>
+                      <option value="#10B981">绿色</option>
+                      <option value="#EF4444">红色</option>
+                      <option value="#8B5CF6">紫色</option>
+                      <option value="#F59E0B">橙色</option>
+                      <option value="#1F2937">黑色</option>
+                    </select>
+                  </div>
+                </div>
+                
+                <!-- 歌词颜色 -->
+                <div class="space-y-1">
+                  <label for="textColorPicker" class="block text-xs text-gray-500 font-medium">歌词颜色</label>
+                  <div class="flex items-center space-x-2">
+                    <input type="color" id="textColorPicker" value="#1F2937" class="w-10 h-10 border-0 rounded-full cursor-pointer transition-transform hover:scale-105 shadow-sm">
+                    <select id="textColorSelect" class="flex-1 p-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all bg-white hover:border-gray-300">
+                      <option value="#1F2937">黑色</option>
+                      <option value="#3B82F6">蓝色</option>
+                      <option value="#10B981">绿色</option>
+                      <option value="#EF4444">红色</option>
+                      <option value="#8B5CF6">紫色</option>
+                      <option value="#F59E0B">橙色</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- 背景设置 -->
+          <div class="border-t border-gray-100">
+            <div class="p-5">
+              <!-- 预设背景选择 -->
+              <div class="mb-5">
+                <h3 class="text-sm font-medium text-gray-700 mb-3 flex items-center">
+                  <i class="fa fa-images text-primary/80 mr-2"></i>预设背景
+                </h3>
+                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
+                  <div class="border-2 border-transparent rounded-lg p-1 cursor-pointer hover:border-primary hover:shadow-md transition-all transform hover:scale-[1.02] bg-white" data-bg="none">
+                    <div class="w-full aspect-[4/3] bg-white rounded border border-gray-200 flex items-center justify-center shadow-sm">
+                      <span class="text-xs text-gray-500">无背景</span>
+                    </div>
+                  </div>
+                  <div class="border-2 border-transparent rounded-lg p-1 cursor-pointer hover:border-primary hover:shadow-md transition-all transform hover:scale-[1.02] bg-white" data-bg="简谱背景图片1.png">
+                    <div class="w-full aspect-[4/3] bg-cover bg-center rounded border border-gray-100 shadow-sm" style="background-image: url('简谱背景图片1.png');"></div>
+                  </div>
+                  <div class="border-2 border-transparent rounded-lg p-1 cursor-pointer hover:border-primary hover:shadow-md transition-all transform hover:scale-[1.02] bg-white" data-bg="简谱背景图片2.png">
+                    <div class="w-full aspect-[4/3] bg-cover bg-center rounded border border-gray-100 shadow-sm" style="background-image: url('简谱背景图片2.png');"></div>
+                  </div>
+                  <div class="border-2 border-transparent rounded-lg p-1 cursor-pointer hover:border-primary hover:shadow-md transition-all transform hover:scale-[1.02] bg-white" data-bg="简谱背景图片3.png">
+                    <div class="w-full aspect-[4/3] bg-cover bg-center rounded border border-gray-100 shadow-sm" style="background-image: url('简谱背景图片3.png');"></div>
+                  </div>
+                  <div class="border-2 border-transparent rounded-lg p-1 cursor-pointer hover:border-primary hover:shadow-md transition-all transform hover:scale-[1.02] bg-white" data-bg="简谱背景图片4.png">
+                    <div class="w-full aspect-[4/3] bg-cover bg-center rounded border border-gray-100 shadow-sm" style="background-image: url('简谱背景图片4.png');"></div>
+                  </div>
+                  <div class="border-2 border-transparent rounded-lg p-1 cursor-pointer hover:border-primary hover:shadow-md transition-all transform hover:scale-[1.02] bg-white" data-bg="简谱背景图片5.png">
+                    <div class="w-full aspect-[4/3] bg-cover bg-center rounded border border-gray-100 shadow-sm" style="background-image: url('简谱背景图片5.png');"></div>
+                  </div>
+                  <div class="border-2 border-transparent rounded-lg p-1 cursor-pointer hover:border-primary hover:shadow-md transition-all transform hover:scale-[1.02] bg-white" data-bg="简谱背景图片6.png">
+                    <div class="w-full aspect-[4/3] bg-cover bg-center rounded border border-gray-100 shadow-sm" style="background-image: url('简谱背景图片6.png');"></div>
+                  </div>
+                  <div class="border-2 border-transparent rounded-lg p-1 cursor-pointer hover:border-primary hover:shadow-md transition-all transform hover:scale-[1.02] bg-white" data-bg="简谱背景图片7.png">
+                    <div class="w-full aspect-[4/3] bg-cover bg-center rounded border border-gray-100 shadow-sm" style="background-image: url('简谱背景图片7.png');"></div>
+                  </div>
+                  <div class="border-2 border-transparent rounded-lg p-1 cursor-pointer hover:border-primary hover:shadow-md transition-all transform hover:scale-[1.02] bg-white" data-bg="简谱背景图片8.png">
+                    <div class="w-full aspect-[4/3] bg-cover bg-center rounded border border-gray-100 shadow-sm" style="background-image: url('简谱背景图片8.png');"></div>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- 自定义背景上传 -->
+              <div>
+                <h3 class="text-sm font-medium text-gray-700 mb-3 flex items-center">
+                  <i class="fa fa-cloud-upload text-primary/80 mr-2"></i>自定义背景
+                </h3>
+                <div class="bg-gray-50 rounded-lg border border-gray-200 p-4">
+                  <div class="flex flex-col sm:flex-row gap-3">
+                    <div class="flex-1 relative">
+                      <input type="file" id="bgImageUpload" accept="image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
+                      <div class="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center bg-white hover:bg-gray-50 transition-colors">
+                        <i class="fa fa-picture-o text-gray-400 text-xl mb-2"></i>
+                        <p class="text-sm text-gray-600">点击或拖拽上传背景图片</p>
+                        <p class="text-xs text-gray-500 mt-1">支持 JPG、PNG、GIF 等常见格式</p>
+                      </div>
+                    </div>
+                    <button id="clearBgBtn" class="px-4 py-3 bg-gray-100 text-gray-700 rounded-lg text-sm font-medium transition-all hover:bg-gray-200 flex items-center justify-center shadow-sm">
+                      <i class="fa fa-times mr-2"></i>清除背景
+                    </button>
+              </select>
+            </div>
+            
 
-    <!-- 预览设置区域 -->
-    <div class="mt-6 bg-white rounded-xl shadow p-4 section-transition hover:shadow-md">
-      <div class="flex items-center mb-3">
-        <h2 class="text-lg font-semibold text-neutral flex items-center">
-          <i class="fa fa-sliders text-primary mr-2"></i>预览设置
-        </h2>
-      </div>
-      
-      <!-- 基础样式设置行 -->
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3">
-        <!-- 左侧：字体设置 -->
-        <div class="grid grid-cols-1 gap-3">
-          <!-- 字体选择 -->
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">字体选择</label>
-            <select id="fontSelect" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all">
-              <option value="'Maple Mono NF CN', monospace" selected>Maple Mono NF CN (默认)</option>
-              <option value="'Otsutome_font', sans-serif">Otsutome_font</option>
-              <option value="'YFFYT', sans-serif">YFFYT</option>
-              <option value="'Swei Sans CJK SC Regular', sans-serif">Swei Sans CJK SC</option>
-              <option value="'Fusion Pixel 12px M latin', monospace">Fusion Pixel 12px M latin</option>
-              <option value="'平方手书体', sans-serif">平方手书体</option>
-            </select>
-          </div>
-          
-          <!-- 字体加粗设置 -->
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">字体加粗</label>
-            <button id="toggleBoldBtn" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 hover:bg-gray-50 flex items-center justify-center transition-all">
-              <i class="fa fa-bold mr-2"></i>
-              <span id="boldStatus">关闭</span>
-            </button>
-          </div>
-          
-          <!-- 字体大小设置 -->
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">字体大小 <span id="fontSizeDisplay">16</span>px</label>
-            <input type="range" id="fontSizeSlider" min="12" max="28" value="16" step="1"
-              class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer transition-all focus:outline-none focus:ring-2 focus:ring-primary/50">
           </div>
         </div>
         
-        <!-- 右侧：颜色设置 -->
-        <div class="grid grid-cols-1 gap-3">
-          <!-- 音符颜色 -->
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">音符颜色</label>
-            <div class="flex items-center space-x-2">
-              <input type="color" id="noteColorPicker" value="#3B82F6" class="w-8 h-8 border-0 rounded-full cursor-pointer transition-transform hover:scale-105">
-              <select id="noteColorSelect" class="flex-1 p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all">
-                <option value="#3B82F6">蓝色</option>
-                <option value="#10B981">绿色</option>
-                <option value="#EF4444">红色</option>
-                <option value="#8B5CF6">紫色</option>
-                <option value="#F59E0B">橙色</option>
-                <option value="#1F2937">黑色</option>
-              </select>
-            </div>
-          </div>
-          
-          <!-- 歌词颜色 -->
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">歌词颜色</label>
-            <div class="flex items-center space-x-2">
-              <input type="color" id="textColorPicker" value="#1F2937" class="w-8 h-8 border-0 rounded-full cursor-pointer transition-transform hover:scale-105">
-              <select id="textColorSelect" class="flex-1 p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all">
-                <option value="#1F2937">黑色</option>
-                <option value="#3B82F6">蓝色</option>
-                <option value="#10B981">绿色</option>
-                <option value="#EF4444">红色</option>
-                <option value="#8B5CF6">紫色</option>
-                <option value="#F59E0B">橙色</option>
-              </select>
-            </div>
+        <!-- 颜色设置卡片 -->
+        <div class="bg-gray-50 rounded-lg p-4 border border-gray-100">
+          <h3 class="text-sm font-medium text-gray-700 mb-3 flex items-center">
+            <i class="fa fa-paint-brush text-primary/80 mr-2"></i>颜色设置
+          </h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- 音符颜色 -->
           </div>
         </div>
       </div>
       
-      <!-- 背景设置 -->
-      <div class="mb-3">
-        <label class="block text-sm font-medium text-gray-700 mb-2">背景设置</label>
-        <div class="grid grid-cols-3 sm:grid-cols-5 gap-2">
-          <div class="bg-light border border-gray-200 rounded-lg p-1 cursor-pointer hover:border-primary hover:shadow-sm transition-all" data-bg="none">
-            <div class="w-full aspect-[4/3] bg-white rounded flex items-center justify-center text-xs">
-              <span class="text-gray-500">无背景</span>
-            </div>
-          </div>
-          <div class="bg-light border border-gray-200 rounded-lg p-1 cursor-pointer hover:border-primary hover:shadow-sm transition-all" data-bg="简谱背景图片1.png">
-            <div class="w-full aspect-[4/3] bg-cover bg-center rounded" style="background-image: url('简谱背景图片1.png');"></div>
-          </div>
-          <div class="bg-light border border-gray-200 rounded-lg p-1 cursor-pointer hover:border-primary hover:shadow-sm transition-all" data-bg="简谱背景图片2.png">
-            <div class="w-full aspect-[4/3] bg-cover bg-center rounded" style="background-image: url('简谱背景图片2.png');"></div>
-          </div>
-          <div class="bg-light border border-gray-200 rounded-lg p-1 cursor-pointer hover:border-primary hover:shadow-sm transition-all" data-bg="简谱背景图片3.png">
-            <div class="w-full aspect-[4/3] bg-cover bg-center rounded" style="background-image: url('简谱背景图片3.png');"></div>
-          </div>
-          <div class="bg-light border border-gray-200 rounded-lg p-1 cursor-pointer hover:border-primary hover:shadow-sm transition-all" data-bg="简谱背景图片4.png">
-            <div class="w-full aspect-[4/3] bg-cover bg-center rounded" style="background-image: url('简谱背景图片4.png');"></div>
-          </div>
-          <div class="bg-light border border-gray-200 rounded-lg p-1 cursor-pointer hover:border-primary hover:shadow-sm transition-all" data-bg="简谱背景图片5.png">
-            <div class="w-full aspect-[4/3] bg-cover bg-center rounded" style="background-image: url('简谱背景图片5.png');"></div>
-          </div>
-          <div class="bg-light border border-gray-200 rounded-lg p-1 cursor-pointer hover:border-primary hover:shadow-sm transition-all" data-bg="简谱背景图片6.png">
-            <div class="w-full aspect-[4/3] bg-cover bg-center rounded" style="background-image: url('简谱背景图片6.png');"></div>
-          </div>
-          <div class="bg-light border border-gray-200 rounded-lg p-1 cursor-pointer hover:border-primary hover:shadow-sm transition-all" data-bg="简谱背景图片7.png">
-            <div class="w-full aspect-[4/3] bg-cover bg-center rounded" style="background-image: url('简谱背景图片7.png');"></div>
-          </div>
-          <div class="bg-light border border-gray-200 rounded-lg p-1 cursor-pointer hover:border-primary hover:shadow-sm transition-all" data-bg="简谱背景图片8.png">
-            <div class="w-full aspect-[4/3] bg-cover bg-center rounded" style="background-image: url('简谱背景图片8.png');"></div>
-          </div>
-        </div>
-        
-        <!-- 自定义背景图 -->
-        <div class="mt-2">
-          <label class="block text-sm font-medium text-gray-700 mb-1">自定义背景</label>
-          <div class="flex space-x-2">
-            <input type="file" id="bgImageUpload" accept="image/*" class="flex-1 p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all">
-            <button id="clearBgBtn" class="bg-gray-200 text-gray-700 px-3 py-2 rounded-md text-sm btn-hover transition-colors hover:bg-gray-300">
-              <i class="fa fa-times mr-1"></i>清除
-            </button>
-          </div>
-        </div>
-      </div>
-      
-      <!-- 应用设置按钮 -->
-      <div class="flex justify-end">
-        <button id="applySettingsBtn" class="bg-primary text-white px-4 py-2 rounded-md btn-hover transition-all hover:shadow-md">
-          <i class="fa fa-check mr-1"></i>应用设置
-        </button>
-      </div>
     </div>
   </main>
 
@@ -666,13 +976,14 @@
       
       // 字体加粗切换
       const toggleBoldBtn = document.getElementById('toggleBoldBtn');
-      const boldStatus = document.getElementById('boldStatus');
       
       toggleBoldBtn.addEventListener('click', () => {
         previewSettings.bold = !previewSettings.bold;
-        boldStatus.textContent = previewSettings.bold ? '开启' : '关闭';
+        // 更新按钮样式以反映状态
         toggleBoldBtn.classList.toggle('bg-primary/10', previewSettings.bold);
         toggleBoldBtn.classList.toggle('border-primary', previewSettings.bold);
+        toggleBoldBtn.classList.toggle('text-primary', previewSettings.bold);
+        toggleBoldBtn.classList.toggle('text-gray-600', !previewSettings.bold);
         // 立即更新预览，使加粗效果生效
         updatePreview();
       });
@@ -876,6 +1187,10 @@
       
       // 下一页
       nextPageBtn.addEventListener('click', () => {
+        // 先更新总页数以确保准确性
+        updatePaginationInfo();
+        
+        // 然后检查是否可以前进
         if (paginationSettings.currentPage < paginationSettings.totalPages) {
           paginationSettings.currentPage++;
           updatePaginationInfo();
@@ -987,16 +1302,34 @@
       }
       
       // 导入数据文件
+      // 先移除可能存在的旧事件监听器
+      const newDataFileInput = document.createElement('input');
+      newDataFileInput.type = 'file';
+      newDataFileInput.id = 'dataFileInput';
+      newDataFileInput.accept = '.json';
+      newDataFileInput.className = 'hidden';
+      
+      // 替换旧的input元素
+      const oldDataFileInput = document.getElementById('dataFileInput');
+      if (oldDataFileInput) {
+        oldDataFileInput.parentNode.replaceChild(newDataFileInput, oldDataFileInput);
+      }
+      
+      // 重新获取引用
+      const updatedDataFileInput = document.getElementById('dataFileInput');
+      
+      // 绑定点击事件
       importDataBtn.addEventListener('click', () => {
-        dataFileInput.click();
+        updatedDataFileInput.click();
       });
       
-      dataFileInput.addEventListener('change', (e) => {
+      // 绑定change事件
+      updatedDataFileInput.addEventListener('change', (e) => {
         const file = e.target.files[0];
         if (!file) return;
         
         if (!file.name.endsWith('.json')) {
-          alert('请选择JSON格式的文件');
+          showNotification('请选择JSON格式的文件', 'warning');
           return;
         }
         
@@ -1007,11 +1340,36 @@
             
             // 验证数据结构
             if (!importedData.lyricsData || !Array.isArray(importedData.lyricsData)) {
-              throw new Error('无效的数据结构');
+              throw new Error('无效的数据结构：缺少lyricsData数组');
             }
             
+            // 确保数据格式正确，修复可能缺失的字段
+            const validatedLyricsData = [];
+            importedData.lyricsData.forEach((row, lineIndex) => {
+              if (row && row.characters && Array.isArray(row.characters)) {
+                // 确保每行数据有必要的字段
+                const validatedRow = {
+                  id: row.id || `row-${lineIndex}`,
+                  lineNumber: row.lineNumber || lineIndex + 1,
+                  characters: []
+                };
+                
+                // 确保每个字符数据有必要的字段
+                row.characters.forEach((charObj, charIndex) => {
+                  validatedRow.characters.push({
+                    text: charObj.text || '',
+                    note: charObj.note || '',
+                    octave: charObj.octave !== undefined ? charObj.octave : 0,
+                    index: charObj.index !== undefined ? charObj.index : charIndex
+                  });
+                });
+                
+                validatedLyricsData.push(validatedRow);
+              }
+            });
+            
             // 恢复数据
-            lyricsData = importedData.lyricsData;
+            lyricsData = validatedLyricsData;
             
             // 恢复歌曲信息
             if (importedData.songTitle) {
@@ -1027,9 +1385,12 @@
               paginationSettings.linesPerPage = importedData.paginationSettings.linesPerPage;
             }
             
+            // 重置到第一页
+            paginationSettings.currentPage = 1;
+            
             // 重新生成歌词文本
             let lyricsText = '';
-            importedData.lyricsData.forEach(row => {
+            lyricsData.forEach(row => {
               let lineText = '';
               row.characters.forEach(char => {
                 lineText += char.text;
@@ -1038,18 +1399,25 @@
             });
             lyricsInput.value = lyricsText.trim();
             
-            // 更新编辑器和预览
-            renderNotesEditor();
-            updatePreview();
-            updatePaginationInfo();
+            // 更新编辑器和预览 - 按正确顺序调用
+            updatePaginationInfo(); // 先更新分页信息
+            renderNotesEditor();    // 再渲染编辑器
+            updatePreview();        // 最后更新预览
             
-            alert('数据导入成功！');
+            showNotification('数据导入成功！', 'success');
           } catch (error) {
-            alert('数据导入失败：' + error.message);
+            console.error('导入错误详情:', error);
+            showNotification('数据导入失败：' + error.message, 'warning');
           } finally {
             // 清空文件输入，允许重复选择同一文件
-            dataFileInput.value = '';
+            updatedDataFileInput.value = '';
           }
+        };
+        
+        // 添加错误处理
+        reader.onerror = () => {
+          showNotification('文件读取失败，请重试', 'warning');
+          updatedDataFileInput.value = '';
         };
         
         reader.readAsText(file);
@@ -1242,72 +1610,76 @@
     // 处理音符输入框的键盘事件
     function handleNoteKeyDown(e) {
       const input = e.target;
-      const rowIndex = parseInt(input.dataset.row);
-      const charIndex = parseInt(input.dataset.index);
       
       // 处理+键（升调）
       if (e.key === '+' || e.key === '=') {
           e.preventDefault();
-          // 增加当前音符的八度 - 无论输入框是否有值，限制最大值为2
-          if (lyricsData[rowIndex] && lyricsData[rowIndex].characters[charIndex]) {
-            if (lyricsData[rowIndex].characters[charIndex].octave < 2) {
-              lyricsData[rowIndex].characters[charIndex].octave++;
-              console.log(`已设置音符(${rowIndex},${charIndex})的音调为: ${lyricsData[rowIndex].characters[charIndex].octave}`);
-              // 临时显示当前音调值，提供即时视觉反馈
-              const tempIndicator = document.createElement('div');
-              tempIndicator.textContent = lyricsData[rowIndex].characters[charIndex].octave > 0 ? `+${lyricsData[rowIndex].characters[charIndex].octave}` : lyricsData[rowIndex].characters[charIndex].octave;
-              tempIndicator.style.position = 'absolute';
-              tempIndicator.style.top = '-20px';
-              tempIndicator.style.left = '50%';
-              tempIndicator.style.transform = 'translateX(-50%)';
-              tempIndicator.style.color = lyricsData[rowIndex].characters[charIndex].octave > 0 ? '#10B981' : '#3B82F6';
-              tempIndicator.style.fontWeight = 'bold';
-              tempIndicator.style.zIndex = '10';
-              input.parentNode.style.position = 'relative';
-              input.parentNode.appendChild(tempIndicator);
-              
-              // 移除临时指示器
-              setTimeout(() => {
-                if (tempIndicator.parentNode) {
-                  tempIndicator.parentNode.removeChild(tempIndicator);
-                }
-              }, 800);
-              
-              updatePreview();
-            }
+          // 增加全局音调偏移 - 限制最大值为2
+          if (globalToneOffset < 2) {
+            globalToneOffset++;
+            console.log(`已设置全局音调偏移为: ${globalToneOffset}`);
+            
+            // 更新全局音调显示
+            updateToneDisplay();
+            
+            // 临时显示当前音调值，提供即时视觉反馈
+            const tempIndicator = document.createElement('div');
+            tempIndicator.textContent = `+${globalToneOffset}`;
+            tempIndicator.style.position = 'absolute';
+            tempIndicator.style.top = '-20px';
+            tempIndicator.style.left = '50%';
+            tempIndicator.style.transform = 'translateX(-50%)';
+            tempIndicator.style.color = '#10B981';
+            tempIndicator.style.fontWeight = 'bold';
+            tempIndicator.style.zIndex = '10';
+            input.parentNode.style.position = 'relative';
+            input.parentNode.appendChild(tempIndicator);
+            
+            // 移除临时指示器
+            setTimeout(() => {
+              if (tempIndicator.parentNode) {
+                tempIndicator.parentNode.removeChild(tempIndicator);
+              }
+            }, 800);
+            
+            // 更新预览，所有使用默认octave的音符都会受到全局音调偏移的影响
+            updatePreview();
           }
       }
       
       // 处理-键（降调）
       if (e.key === '-' || e.key === '_') {
           e.preventDefault();
-          // 减少当前音符的八度 - 无论输入框是否有值，限制最小值为-1
-          if (lyricsData[rowIndex] && lyricsData[rowIndex].characters[charIndex]) {
-            if (lyricsData[rowIndex].characters[charIndex].octave > -1) {
-              lyricsData[rowIndex].characters[charIndex].octave--;
-              console.log(`已设置音符(${rowIndex},${charIndex})的音调为: ${lyricsData[rowIndex].characters[charIndex].octave}`);
-              // 临时显示当前音调值，提供即时视觉反馈
-              const tempIndicator = document.createElement('div');
-              tempIndicator.textContent = lyricsData[rowIndex].characters[charIndex].octave > 0 ? `+${lyricsData[rowIndex].characters[charIndex].octave}` : lyricsData[rowIndex].characters[charIndex].octave;
-              tempIndicator.style.position = 'absolute';
-              tempIndicator.style.top = '-20px';
-              tempIndicator.style.left = '50%';
-              tempIndicator.style.transform = 'translateX(-50%)';
-              tempIndicator.style.color = lyricsData[rowIndex].characters[charIndex].octave > 0 ? '#10B981' : '#3B82F6';
-              tempIndicator.style.fontWeight = 'bold';
-              tempIndicator.style.zIndex = '10';
-              input.parentNode.style.position = 'relative';
-              input.parentNode.appendChild(tempIndicator);
-              
-              // 移除临时指示器
-              setTimeout(() => {
-                if (tempIndicator.parentNode) {
-                  tempIndicator.parentNode.removeChild(tempIndicator);
-                }
-              }, 800);
-              
-              updatePreview();
-            }
+          // 减少全局音调偏移 - 限制最小值为-1
+          if (globalToneOffset > -1) {
+            globalToneOffset--;
+            console.log(`已设置全局音调偏移为: ${globalToneOffset}`);
+            
+            // 更新全局音调显示
+            updateToneDisplay();
+            
+            // 临时显示当前音调值，提供即时视觉反馈
+            const tempIndicator = document.createElement('div');
+            tempIndicator.textContent = globalToneOffset;
+            tempIndicator.style.position = 'absolute';
+            tempIndicator.style.top = '-20px';
+            tempIndicator.style.left = '50%';
+            tempIndicator.style.transform = 'translateX(-50%)';
+            tempIndicator.style.color = '#3B82F6';
+            tempIndicator.style.fontWeight = 'bold';
+            tempIndicator.style.zIndex = '10';
+            input.parentNode.style.position = 'relative';
+            input.parentNode.appendChild(tempIndicator);
+            
+            // 移除临时指示器
+            setTimeout(() => {
+              if (tempIndicator.parentNode) {
+                tempIndicator.parentNode.removeChild(tempIndicator);
+              }
+            }, 800);
+            
+            // 更新预览，所有使用默认octave的音符都会受到全局音调偏移的影响
+            updatePreview();
           }
       }
       
@@ -1557,23 +1929,29 @@
               const hasPlus1Dot = octave >= 1;
               const hasMinus1Dot = octave <= -1;
               
+              // 计算与字体大小相关的动态尺寸
+              const dotSize = Math.round(previewSettings.fontSize * 0.6);
+              const rowHeight = Math.round(previewSettings.fontSize * 0.9);
+              const containerWidth = Math.round(previewSettings.fontSize * 1.5);
+              const containerHeight = rowHeight * 4;
+              
               noteHtml = `
-                <div class="note-container" style="display: flex; flex-direction: column; align-items: center; width: 20px; height: 45px;">
+                <div class="note-container" style="display: flex; flex-direction: column; align-items: center; width: ${containerWidth}px; height: ${containerHeight}px;">
                   <!-- +2音调 -->
-                  <div class="tone-row" style="height: 14px; display: flex; align-items: center; justify-content: center;">
-                    <span style="color: ${hasPlus2Dot ? dotColor : 'transparent'}; font-size: 10px;">●</span>
+                  <div class="tone-row" style="height: ${rowHeight}px; display: flex; align-items: center; justify-content: center;">
+                    <span style="color: ${hasPlus2Dot ? dotColor : 'transparent'}; font-size: ${dotSize}px;">●</span>
                   </div>
                   <!-- +1音调 -->
-                  <div class="tone-row" style="height: 14px; display: flex; align-items: center; justify-content: center;">
-                    <span style="color: ${hasPlus1Dot ? dotColor : 'transparent'}; font-size: 10px;">●</span>
+                  <div class="tone-row" style="height: ${rowHeight}px; display: flex; align-items: center; justify-content: center;">
+                    <span style="color: ${hasPlus1Dot ? dotColor : 'transparent'}; font-size: ${dotSize}px;">●</span>
                   </div>
                   <!-- 音符数字 -->
-                  <div class="note-row" style="height: 14px; display: flex; align-items: center; justify-content: center;">
-                    <span class="note-number text-xl font-medium" style="color: ${previewSettings.noteColor};">${note}</span>
+                  <div class="note-row" style="height: ${rowHeight}px; display: flex; align-items: center; justify-content: center;">
+                    <span class="note-number font-medium" style="color: ${previewSettings.noteColor}; font-size: ${previewSettings.fontSize * 1.2}px;">${note}</span>
                   </div>
                   <!-- -1音调 -->
-                  <div class="tone-row" style="height: 14px; display: flex; align-items: center; justify-content: center;">
-                    <span style="color: ${hasMinus1Dot ? dotColor : 'transparent'}; font-size: 10px;">●</span>
+                  <div class="tone-row" style="height: ${rowHeight}px; display: flex; align-items: center; justify-content: center;">
+                    <span style="color: ${hasMinus1Dot ? dotColor : 'transparent'}; font-size: ${dotSize}px;">●</span>
                   </div>
                 </div>
               `;
@@ -1585,7 +1963,7 @@
           html += `
             <div class="flex flex-col items-center">
               ${noteHtml}
-              <span class="text-base mt-2" style="color: ${previewSettings.textColor}">${charObj.text}</span>
+              <span style="color: ${previewSettings.textColor}; font-size: ${previewSettings.fontSize}px; margin-top: 8px;">${charObj.text}</span>
             </div>
           `;
         });
@@ -1898,20 +2276,7 @@
           // 恢复预览设置
           if (cache.previewSettings) {
             Object.assign(previewSettings, cache.previewSettings);
-            // 更新UI控件以反映保存的设置
-            if (typeof document.getElementById('fontSizeSlider') !== 'undefined' && 
-                document.getElementById('fontSizeSlider') !== null) {
-              document.getElementById('fontSizeSlider').value = previewSettings.fontSize;
-              document.getElementById('fontSizeDisplay').textContent = previewSettings.fontSize;
-            }
-            // 更新加粗按钮状态
-            if (typeof document.getElementById('boldStatus') !== 'undefined' && 
-                document.getElementById('boldStatus') !== null) {
-              document.getElementById('boldStatus').textContent = previewSettings.bold ? '开启' : '关闭';
-              const toggleBoldBtn = document.getElementById('toggleBoldBtn');
-              toggleBoldBtn.classList.toggle('bg-primary/10', previewSettings.bold);
-              toggleBoldBtn.classList.toggle('border-primary', previewSettings.bold);
-            }
+
           }
           
           // 如果有歌词，自动分割以恢复数据结构
