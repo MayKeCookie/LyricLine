@@ -12,7 +12,10 @@
   <link href="https://fontsapi.zeoseven.com/446/main/result.css" rel="stylesheet">
   <link href="https://fontsapi.zeoseven.com/708/main/result.css" rel="stylesheet">
   <link href="https://fontsapi.zeoseven.com/570/main/result.css" rel="stylesheet">
-  <link href="https://fontsapi.zeoseven.com/501/main/result.css" rel="stylesheet">
+  <link href="https://fontsapi.zeoseven.com/116/main/result.css" rel="stylesheet">
+  <link href="https://fontsapi.zeoseven.com/146/main/result.css" rel="stylesheet">
+  <link href="https://fontsapi.zeoseven.com/778/main/result.css" rel="stylesheet">
+  <link href="https://fontsapi.zeoseven.com/478/main/result.css" rel="stylesheet">
   <link href="https://fontsapi.zeoseven.com/442/main/result.css" rel="stylesheet">
   
   <!-- 自定义图标样式 -->
@@ -55,8 +58,58 @@
       font-family: '平方手书体', sans-serif;
       font-weight: bold;
     }
+    .font-bold-kingnammm {
+      font-family: 'Kingnammm Maiyuan 2', sans-serif;
+      font-weight: bold;
+    }
+    .font-bold-jiangcheng {
+      font-family: 'JiangChengLvDongYuan', sans-serif;
+      font-weight: bold;
+    }
+    .font-bold-usmcc {
+      font-family: 'USMCC Stellar Gothic', sans-serif;
+      font-weight: bold;
+    }
+    .font-bold-tsanger {
+      font-family: 'TsangerZhoukeZhengdabangshu', sans-serif;
+      font-weight: bold;
+    }
   </style>
   <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+  
+  <script>
+    // 使notesEditor的高度与预览区域高度一致的函数
+    function syncNotesEditorHeight() {
+      const previewArea = document.getElementById('previewArea');
+      const notesEditor = document.getElementById('notesEditor');
+      
+      if (previewArea && notesEditor) {
+        const previewHeight = previewArea.offsetHeight;
+        // 设置notesEditor的高度为预览区域的高度
+        notesEditor.style.height = `${previewHeight}px`;
+      }
+    }
+    
+    // 页面加载完成后同步高度
+    document.addEventListener('DOMContentLoaded', function() {
+      syncNotesEditorHeight();
+      
+      // 监听窗口大小变化，重新同步高度
+      window.addEventListener('resize', syncNotesEditorHeight);
+      
+      // 监听宽高比变化，重新同步高度
+      const aspectRatioSelect = document.getElementById('aspectRatioSelect');
+      const applyRatioBtn = document.getElementById('applyRatioBtn');
+      
+      if (aspectRatioSelect) {
+        aspectRatioSelect.addEventListener('change', syncNotesEditorHeight);
+      }
+      
+      if (applyRatioBtn) {
+        applyRatioBtn.addEventListener('click', syncNotesEditorHeight);
+      }
+    });
+  </script>
   
   <!-- Tailwind 配置 -->
   <script>
@@ -289,6 +342,19 @@
                   <p>编辑后的简谱将在这里显示</p>
                 </div>
               </div>
+              
+              <!-- 分页控制 -->
+              <div id="pageInfo" class="hidden flex items-center justify-center space-x-3 mt-3">
+                <button id="prevPageBtn" class="px-3 py-1 border border-gray-200 rounded-md hover:bg-gray-50 transition-colors">
+                  <i class="fa fa-chevron-left"></i>
+                </button>
+                <span class="text-sm text-gray-600">
+                  第 <span id="currentPageDisplay">1</span> 页 / 共 <span id="totalPagesDisplay">1</span> 页
+                </span>
+                <button id="nextPageBtn" class="px-3 py-1 border border-gray-200 rounded-md hover:bg-gray-50 transition-colors">
+                  <i class="fa fa-chevron-right"></i>
+                </button>
+              </div>
             </div>
           </div>
           
@@ -297,7 +363,7 @@
             <h2 class="text-lg font-semibold text-neutral flex items-center mb-4">
               <i class="fa fa-edit text-primary mr-2"></i>简谱编辑区域
             </h2>
-            <div id="notesEditor" class="space-y-3 max-h-[60vh] overflow-y-auto p-2">
+            <div id="notesEditor" class="space-y-3 overflow-y-auto p-2">
               <div class="text-gray-500 text-center py-10 border-2 border-dashed border-gray-200 rounded-lg">
                 <p>请先输入歌词并点击"分割歌词"按钮</p>
               </div>
@@ -306,103 +372,37 @@
         </div>
       </div>
       
-      <!-- 第三部分：导出与预览设置（底部） -->
+      <!-- 第三部分：预览与导出设置（底部） -->
       <div class="bg-white rounded-xl shadow p-5 section-transition hover:shadow-md">
-        <!-- 标签页标题 -->
-        <div class="flex border-b border-gray-200 bg-gradient-to-r from-primary/5 to-white mb-4">
-          <button id="exportTabBtn" class="px-5 py-2.5 text-sm font-medium text-primary border-b-2 border-primary focus:outline-none flex items-center">
-            <i class="fa fa-download mr-2"></i>导出设置
-          </button>
-          <button id="previewTabBtn" class="px-5 py-2.5 text-sm font-medium text-gray-600 hover:text-primary focus:outline-none flex items-center">
-            <i class="fa fa-sliders mr-2"></i>预览设置
-          </button>
-        </div>
-        
-        <!-- 导出设置标签页内容 -->
-        <div id="exportTabContent">
-          <div class="flex justify-end mb-4">
-            <div class="space-x-2">
-              <button id="exportImageBtn" class="bg-secondary text-white px-3 py-1.5 rounded-md text-sm font-medium btn-hover transition-all hover:shadow-md">
-                <i class="fa fa-image mr-1"></i>导出当前页
-              </button>
-              <button id="exportAllBtn" class="bg-accent text-white px-3 py-1.5 rounded-md text-sm font-medium btn-hover transition-all hover:shadow-md">
-                <i class="fa fa-files-o mr-1"></i>导出全部
-              </button>
-            </div>
-          </div>
+        <!-- 预览设置部分 -->
+        <div class="mb-8">
+          <h3 class="text-lg font-medium text-gray-800 mb-4 flex items-center">
+            <i class="fa fa-sliders text-primary mr-2"></i>预览设置
+          </h3>
           
-          <!-- 导出选项卡片 -->
-          <div class="bg-gray-50 rounded-lg p-4 border border-gray-100">
-            <h3 class="text-sm font-medium text-gray-700 mb-3 flex items-center">
-              <i class="fa fa-cog text-primary/80 mr-2"></i>导出选项
-            </h3>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div class="space-y-1">
-                <label for="exportFormatSelect" class="block text-xs text-gray-500 font-medium">导出格式</label>
-                <select id="exportFormatSelect" class="w-full p-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all bg-white">
-                  <option value="png" selected>PNG</option>
-                  <option value="jpg">JPG</option>
-                  <option value="pdf">PDF (Beta)</option>
-                </select>
-              </div>
-              
-              <div class="space-y-1">
-                <label for="resolutionSelect" class="block text-xs text-gray-500 font-medium">导出分辨率</label>
-                <select id="resolutionSelect" class="w-full p-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all bg-white">
-                  <option value="1">标准 (1x)</option>
-                  <option value="2" selected>高清 (2x)</option>
-                  <option value="3">超清 (3x)</option>
-                </select>
-              </div>
-              
-              <div class="space-y-1">
-                <label for="linesPerPageInput" class="block text-xs text-gray-500 font-medium">每页行数</label>
-                <div class="flex items-center space-x-2">
-                  <input type="number" id="linesPerPageInput" min="1" value="4" class="w-24 p-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all bg-white">
-                  <span class="text-gray-600">行/页</span>
-                </div>
-              </div>
-            </div>
-          </div>
-          
-          <!-- 底部操作按钮 -->
-          <div class="flex justify-between items-center border-t border-gray-100 pt-4 mt-4">
-            <div class="flex space-x-2">
-              <button id="exportDataBtn" class="bg-primary text-white px-3 py-1.5 rounded-md text-sm btn-hover">
-                <i class="fa fa-download mr-1"></i>导出数据
-              </button>
-              <label id="importDataBtn" class="cursor-pointer bg-gray-700 text-white px-3 py-1.5 rounded-md text-sm btn-hover inline-block">
-                <i class="fa fa-upload mr-1"></i>导入数据
-                <input type="file" id="dataFileInput" accept=".json" class="hidden">
-              </label>
-            </div>
-            <button id="applySettingsBtn" class="bg-primary text-white px-5 py-1.5 rounded-md font-medium btn-hover transition-all hover:shadow-md hover:bg-primary/90">
-              <i class="fa fa-check mr-1.5"></i>应用设置
-            </button>
-          </div>
-        </div>
-        
-        <!-- 预览设置标签页内容 - 初始隐藏 -->
-        <div id="previewTabContent" class="hidden">
           <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <!-- 左侧：字体和颜色设置 -->
             <div>
               <!-- 字体设置卡片 -->
               <div class="bg-gray-50 rounded-lg p-4 mb-5 border border-gray-100">
-                <h3 class="text-sm font-medium text-gray-700 mb-3 flex items-center">
+                <h4 class="text-sm font-medium text-gray-700 mb-3 flex items-center">
                   <i class="fa fa-font text-primary/80 mr-2"></i>字体设置
-                </h3>
+                </h4>
                 <div class="space-y-4">
                   <!-- 字体选择 -->
                   <div class="space-y-1">
                     <label for="fontSelect" class="block text-xs text-gray-500 font-medium">字体选择</label>
                     <select id="fontSelect" class="w-full min-w-[200px] p-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all bg-white hover:border-gray-300">
-                      <option value="'Maple Mono NF CN', monospace" selected>Maple Mono NF CN (默认)</option>
-                      <option value="'Otsutome_font', sans-serif">Otsutome_font</option>
-                      <option value="'YFFYT', sans-serif">YFFYT</option>
-                      <option value="'Swei Sans CJK SC Regular', sans-serif">Swei Sans CJK SC</option>
-                      <option value="'Fusion Pixel 12px M latin', monospace">Fusion Pixel 12px M latin</option>
+                      <option value="'Maple Mono NF CN', monospace" selected>枫叶等宽 (默认)</option>
+                      <option value="'Otsutome_font', sans-serif">乙女字体</option>
+                      <option value="'YFFYT', sans-serif">站酷快乐体</option>
+                      <option value="'Swei Sans CJK SC Regular', sans-serif">锐字锐线</option>
+                      <option value="'Fusion Pixel 12px M latin', monospace">融合像素</option>
                       <option value="'平方手书体', sans-serif">平方手书体</option>
+                      <option value="'Kingnammm Maiyuan 2', sans-serif">荆南麦圆</option>
+                      <option value="'JiangChengLvDongYuan', sans-serif">江城绿东圆</option>
+                      <option value="'USMCC Stellar Gothic', sans-serif">星界黑体</option>
+                      <option value="'TsangerZhoukeZhengdabangshu', sans-serif">仓周科正大榜书</option>
                     </select>
                   </div>
                   
@@ -422,9 +422,9 @@
               
               <!-- 颜色设置卡片 -->
               <div class="bg-gray-50 rounded-lg p-4 border border-gray-100">
-                <h3 class="text-sm font-medium text-gray-700 mb-3 flex items-center">
+                <h4 class="text-sm font-medium text-gray-700 mb-3 flex items-center">
                   <i class="fa fa-paint-brush text-primary/80 mr-2"></i>颜色设置
-                </h3>
+                </h4>
                 <div class="space-y-4">
                   <!-- 音符颜色 -->
                   <div class="space-y-1">
@@ -459,13 +459,27 @@
                   </div>
                 </div>
               </div>
+              
+              <!-- 分页设置卡片 -->
+              <div class="bg-gray-50 rounded-lg p-4 border border-gray-100">
+                <h4 class="text-sm font-medium text-gray-700 mb-3 flex items-center">
+                  <i class="fa fa-list-ol text-primary/80 mr-2"></i>分页设置
+                </h4>
+                <div class="space-y-1">
+                  <label for="linesPerPageInput" class="block text-xs text-gray-500 font-medium">每页行数</label>
+                  <div class="flex items-center space-x-2">
+                    <input type="number" id="linesPerPageInput" min="1" value="4" class="w-24 p-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all bg-white">
+                    <span class="text-gray-600">行/页</span>
+                  </div>
+                </div>
+              </div>
             </div>
             
             <!-- 右侧：背景设置 -->
             <div>
-              <h3 class="text-sm font-medium text-gray-700 mb-3 flex items-center">
+              <h4 class="text-sm font-medium text-gray-700 mb-3 flex items-center">
                 <i class="fa fa-images text-primary/80 mr-2"></i>背景设置
-              </h3>
+              </h4>
               
               <!-- 预设背景选择 -->
               <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-4">
@@ -518,49 +532,66 @@
             </div>
           </div>
         </div>
+        
+        <!-- 导出设置部分 -->
+        <div>
+          <h3 class="text-lg font-medium text-gray-800 mb-4 flex items-center">
+            <i class="fa fa-download text-primary mr-2"></i>导出设置
+          </h3>
+          
+          <div class="flex justify-end mb-4">
+            <div class="space-x-2">
+              <button id="exportImageBtn" class="bg-secondary text-white px-3 py-1.5 rounded-md text-sm font-medium btn-hover transition-all hover:shadow-md">
+                <i class="fa fa-image mr-1"></i>导出当前页
+              </button>
+              <button id="exportAllBtn" class="bg-accent text-white px-3 py-1.5 rounded-md text-sm font-medium btn-hover transition-all hover:shadow-md">
+                <i class="fa fa-files-o mr-1"></i>导出全部
+              </button>
+            </div>
+          </div>
+          
+          <!-- 导出选项卡片 -->
+          <div class="bg-gray-50 rounded-lg p-4 border border-gray-100">
+            <h4 class="text-sm font-medium text-gray-700 mb-3 flex items-center">
+              <i class="fa fa-cog text-primary/80 mr-2"></i>导出选项
+            </h4>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="space-y-1">
+                <label class="block text-xs text-gray-500 font-medium">导出格式</label>
+                <div class="p-2.5 border border-gray-200 rounded-lg bg-white text-gray-700 font-medium">
+                  PNG
+                </div>
+              </div>
+              
+              <div class="space-y-1">
+                <label class="block text-xs text-gray-500 font-medium">导出分辨率</label>
+                <div class="p-2.5 border border-gray-200 rounded-lg bg-white text-gray-700 font-medium">
+                  超清 (3x)
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- 底部操作按钮 - 移到所有设置下方 -->
+        <div class="flex justify-between items-center border-t border-gray-100 pt-4 mt-6">
+          <div class="flex space-x-2">
+            <button id="exportDataBtn" class="bg-primary text-white px-3 py-1.5 rounded-md text-sm btn-hover">
+              <i class="fa fa-download mr-1"></i>导出数据
+            </button>
+            <label id="importDataBtn" class="cursor-pointer bg-gray-700 text-white px-3 py-1.5 rounded-md text-sm btn-hover inline-block">
+              <i class="fa fa-upload mr-1"></i>导入数据
+              <input type="file" id="dataFileInput" accept=".json" class="hidden">
+            </label>
+          </div>
+          <button id="applySettingsBtn" class="bg-primary text-white px-5 py-1.5 rounded-md font-medium btn-hover transition-all hover:shadow-md hover:bg-primary/90">
+            <i class="fa fa-check mr-1.5"></i>应用设置
+          </button>
+        </div>
       </div>
     </div>
         
-        <script>
-          // 标签页切换功能
-          document.addEventListener('DOMContentLoaded', function() {
-            const exportTabBtn = document.getElementById('exportTabBtn');
-            const previewTabBtn = document.getElementById('previewTabBtn');
-            
-            const exportTabContent = document.getElementById('exportTabContent');
-            const previewTabContent = document.getElementById('previewTabContent');
-            
-            // 重置所有标签页样式和内容显示
-            function resetTabs() {
-              // 重置所有按钮样式
-              [exportTabBtn, previewTabBtn].forEach(btn => {
-                btn.classList.remove('text-primary', 'border-b-2', 'border-primary');
-                btn.classList.add('text-gray-600');
-              });
-              
-              // 隐藏所有内容区域
-              [exportTabContent, previewTabContent].forEach(content => {
-                content.classList.add('hidden');
-              });
-            }
-            
-            // 切换到导出设置标签
-            exportTabBtn.addEventListener('click', function() {
-              resetTabs();
-              exportTabBtn.classList.add('text-primary', 'border-b-2', 'border-primary');
-              exportTabBtn.classList.remove('text-gray-600');
-              exportTabContent.classList.remove('hidden');
-            });
-            
-            // 切换到预览设置标签
-            previewTabBtn.addEventListener('click', function() {
-              resetTabs();
-              previewTabBtn.classList.add('text-primary', 'border-b-2', 'border-primary');
-              previewTabBtn.classList.remove('text-gray-600');
-              previewTabContent.classList.remove('hidden');
-            });
-          });
-        </script>
+
           
           <!-- 导出状态 -->
           <div id="exportStatus" class="hidden px-5 pb-5">
@@ -573,161 +604,7 @@
           </div>
         </div>
         
-        <!-- 预览设置标签页内容 - 初始隐藏 -->
-        <div id="previewTabContent" class="hidden">
-          <div class="p-5">
-            <!-- 字体设置卡片 -->
-            <div class="bg-gray-50 rounded-lg p-4 mb-5 border border-gray-100">
-              <h3 class="text-sm font-medium text-gray-700 mb-3 flex items-center">
-                <i class="fa fa-font text-primary/80 mr-2"></i>字体设置
-              </h3>
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <!-- 字体选择 -->
-                <div class="space-y-1">
-                  <label for="fontSelect" class="block text-xs text-gray-500 font-medium">字体选择</label>
-                  <select id="fontSelect" class="w-full min-w-[200px] p-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all bg-white hover:border-gray-300">
-                    <option value="'Maple Mono NF CN', monospace" selected>Maple Mono NF CN (默认)</option>
-                    <option value="'Otsutome_font', sans-serif">Otsutome_font</option>
-                    <option value="'YFFYT', sans-serif">YFFYT</option>
-                    <option value="'Swei Sans CJK SC Regular', sans-serif">Swei Sans CJK SC</option>
-                    <option value="'Fusion Pixel 12px M latin', monospace">Fusion Pixel 12px M latin</option>
-                    <option value="'平方手书体', sans-serif">平方手书体</option>
-                  </select>
-                </div>
-                
-                <!-- 字体大小和加粗设置 -->
-                <div class="space-y-1">
-                  <label class="block text-xs text-gray-500 font-medium">字体大小 <span id="fontSizeDisplay" class="text-primary font-medium">16</span>px</label>
-                  <div class="flex items-center gap-2">
-                    <input type="range" id="fontSizeSlider" min="12" max="28" value="16" step="1"
-                      class="flex-1 h-2.5 bg-gray-200 rounded-lg appearance-none cursor-pointer transition-all focus:outline-none focus:ring-2 focus:ring-primary/50">
-                    <button id="toggleBoldBtn" class="h-8 w-8 flex items-center justify-center border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-primary/50 hover:bg-gray-50 transition-all" title="字体加粗">
-                      <i class="fa fa-bold text-gray-600"></i>
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-            
-            <!-- 颜色设置卡片 -->
-            <div class="bg-gray-50 rounded-lg p-4 border border-gray-100">
-              <h3 class="text-sm font-medium text-gray-700 mb-3 flex items-center">
-                <i class="fa fa-paint-brush text-primary/80 mr-2"></i>颜色设置
-              </h3>
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <!-- 音符颜色 -->
-                <div class="space-y-1">
-                  <label for="noteColorPicker" class="block text-xs text-gray-500 font-medium">音符颜色</label>
-                  <div class="flex items-center space-x-2">
-                    <input type="color" id="noteColorPicker" value="#3B82F6" class="w-10 h-10 border-0 rounded-full cursor-pointer transition-transform hover:scale-105 shadow-sm">
-                    <select id="noteColorSelect" class="flex-1 p-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all bg-white hover:border-gray-300">
-                      <option value="#3B82F6">蓝色</option>
-                      <option value="#10B981">绿色</option>
-                      <option value="#EF4444">红色</option>
-                      <option value="#8B5CF6">紫色</option>
-                      <option value="#F59E0B">橙色</option>
-                      <option value="#1F2937">黑色</option>
-                    </select>
-                  </div>
-                </div>
-                
-                <!-- 歌词颜色 -->
-                <div class="space-y-1">
-                  <label for="textColorPicker" class="block text-xs text-gray-500 font-medium">歌词颜色</label>
-                  <div class="flex items-center space-x-2">
-                    <input type="color" id="textColorPicker" value="#1F2937" class="w-10 h-10 border-0 rounded-full cursor-pointer transition-transform hover:scale-105 shadow-sm">
-                    <select id="textColorSelect" class="flex-1 p-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all bg-white hover:border-gray-300">
-                      <option value="#1F2937">黑色</option>
-                      <option value="#3B82F6">蓝色</option>
-                      <option value="#10B981">绿色</option>
-                      <option value="#EF4444">红色</option>
-                      <option value="#8B5CF6">紫色</option>
-                      <option value="#F59E0B">橙色</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          
-          <!-- 背景设置 -->
-          <div class="border-t border-gray-100">
-            <div class="p-5">
-              <!-- 预设背景选择 -->
-              <div class="mb-5">
-                <h3 class="text-sm font-medium text-gray-700 mb-3 flex items-center">
-                  <i class="fa fa-images text-primary/80 mr-2"></i>预设背景
-                </h3>
-                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
-                  <div class="border-2 border-transparent rounded-lg p-1 cursor-pointer hover:border-primary hover:shadow-md transition-all transform hover:scale-[1.02] bg-white" data-bg="none">
-                    <div class="w-full aspect-[4/3] bg-white rounded border border-gray-200 flex items-center justify-center shadow-sm">
-                      <span class="text-xs text-gray-500">无背景</span>
-                    </div>
-                  </div>
-                  <div class="border-2 border-transparent rounded-lg p-1 cursor-pointer hover:border-primary hover:shadow-md transition-all transform hover:scale-[1.02] bg-white" data-bg="简谱背景图片1.png">
-                    <div class="w-full aspect-[4/3] bg-cover bg-center rounded border border-gray-100 shadow-sm" style="background-image: url('简谱背景图片1.png');"></div>
-                  </div>
-                  <div class="border-2 border-transparent rounded-lg p-1 cursor-pointer hover:border-primary hover:shadow-md transition-all transform hover:scale-[1.02] bg-white" data-bg="简谱背景图片2.png">
-                    <div class="w-full aspect-[4/3] bg-cover bg-center rounded border border-gray-100 shadow-sm" style="background-image: url('简谱背景图片2.png');"></div>
-                  </div>
-                  <div class="border-2 border-transparent rounded-lg p-1 cursor-pointer hover:border-primary hover:shadow-md transition-all transform hover:scale-[1.02] bg-white" data-bg="简谱背景图片3.png">
-                    <div class="w-full aspect-[4/3] bg-cover bg-center rounded border border-gray-100 shadow-sm" style="background-image: url('简谱背景图片3.png');"></div>
-                  </div>
-                  <div class="border-2 border-transparent rounded-lg p-1 cursor-pointer hover:border-primary hover:shadow-md transition-all transform hover:scale-[1.02] bg-white" data-bg="简谱背景图片4.png">
-                    <div class="w-full aspect-[4/3] bg-cover bg-center rounded border border-gray-100 shadow-sm" style="background-image: url('简谱背景图片4.png');"></div>
-                  </div>
-                  <div class="border-2 border-transparent rounded-lg p-1 cursor-pointer hover:border-primary hover:shadow-md transition-all transform hover:scale-[1.02] bg-white" data-bg="简谱背景图片5.png">
-                    <div class="w-full aspect-[4/3] bg-cover bg-center rounded border border-gray-100 shadow-sm" style="background-image: url('简谱背景图片5.png');"></div>
-                  </div>
-                  <div class="border-2 border-transparent rounded-lg p-1 cursor-pointer hover:border-primary hover:shadow-md transition-all transform hover:scale-[1.02] bg-white" data-bg="简谱背景图片6.png">
-                    <div class="w-full aspect-[4/3] bg-cover bg-center rounded border border-gray-100 shadow-sm" style="background-image: url('简谱背景图片6.png');"></div>
-                  </div>
-                  <div class="border-2 border-transparent rounded-lg p-1 cursor-pointer hover:border-primary hover:shadow-md transition-all transform hover:scale-[1.02] bg-white" data-bg="简谱背景图片7.png">
-                    <div class="w-full aspect-[4/3] bg-cover bg-center rounded border border-gray-100 shadow-sm" style="background-image: url('简谱背景图片7.png');"></div>
-                  </div>
-                  <div class="border-2 border-transparent rounded-lg p-1 cursor-pointer hover:border-primary hover:shadow-md transition-all transform hover:scale-[1.02] bg-white" data-bg="简谱背景图片8.png">
-                    <div class="w-full aspect-[4/3] bg-cover bg-center rounded border border-gray-100 shadow-sm" style="background-image: url('简谱背景图片8.png');"></div>
-                  </div>
-                </div>
-              </div>
-              
-              <!-- 自定义背景上传 -->
-              <div>
-                <h3 class="text-sm font-medium text-gray-700 mb-3 flex items-center">
-                  <i class="fa fa-cloud-upload text-primary/80 mr-2"></i>自定义背景
-                </h3>
-                <div class="bg-gray-50 rounded-lg border border-gray-200 p-4">
-                  <div class="flex flex-col sm:flex-row gap-3">
-                    <div class="flex-1 relative">
-                      <input type="file" id="bgImageUpload" accept="image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
-                      <div class="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center bg-white hover:bg-gray-50 transition-colors">
-                        <i class="fa fa-picture-o text-gray-400 text-xl mb-2"></i>
-                        <p class="text-sm text-gray-600">点击或拖拽上传背景图片</p>
-                        <p class="text-xs text-gray-500 mt-1">支持 JPG、PNG、GIF 等常见格式</p>
-                      </div>
-                    </div>
-                    <button id="clearBgBtn" class="px-4 py-3 bg-gray-100 text-gray-700 rounded-lg text-sm font-medium transition-all hover:bg-gray-200 flex items-center justify-center shadow-sm">
-                      <i class="fa fa-times mr-2"></i>清除背景
-                    </button>
-              </select>
-            </div>
-            
 
-          </div>
-        </div>
-        
-        <!-- 颜色设置卡片 -->
-        <div class="bg-gray-50 rounded-lg p-4 border border-gray-100">
-          <h3 class="text-sm font-medium text-gray-700 mb-3 flex items-center">
-            <i class="fa fa-paint-brush text-primary/80 mr-2"></i>颜色设置
-          </h3>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <!-- 音符颜色 -->
-          </div>
-        </div>
-      </div>
-      
-    </div>
   </main>
 
   <!-- 页脚 -->
@@ -1057,6 +934,7 @@
       // 分页设置
       const linesPerPageInput = document.getElementById('linesPerPageInput');
 
+      // 添加空值检查以防止引用不存在的元素
       const pageInfo = document.getElementById('pageInfo');
       const currentPageDisplay = document.getElementById('currentPageDisplay');
       const totalPagesDisplay = document.getElementById('totalPagesDisplay');
@@ -1068,8 +946,10 @@
       // updatePaginationInfo函数已移至全局作用域
       
       // 每页行数输入 - 添加input和change事件监听，确保实时更新
-      linesPerPageInput.addEventListener('input', handleLinesPerPageChange);
-      linesPerPageInput.addEventListener('change', handleLinesPerPageChange);
+      if (linesPerPageInput) {
+        linesPerPageInput.addEventListener('input', handleLinesPerPageChange);
+        linesPerPageInput.addEventListener('change', handleLinesPerPageChange);
+      }
       
       function handleLinesPerPageChange() {
         const linesPerPage = parseInt(linesPerPageInput.value);
@@ -1088,29 +968,82 @@
 
       
       // 上一页
-      prevPageBtn.addEventListener('click', () => {
-        if (paginationSettings.currentPage > 1) {
-          paginationSettings.currentPage--;
-          updatePaginationInfo();
-          updatePreview();
-        }
-      });
+      if (prevPageBtn) {
+        // 使用onclick属性替代addEventListener，确保只有一个事件监听器
+        prevPageBtn.onclick = function handlePrevPageClick() {
+          // 防止事件重复触发的标志
+          if (handlePrevPageClick.isProcessing) return;
+          handlePrevPageClick.isProcessing = true;
+          
+          console.log('上一页按钮被点击，触发处理函数');
+          
+          // 简单直接的上一页逻辑：只在当前页大于1时递减1
+          const targetPage = paginationSettings.currentPage - 1;
+          
+          // 检查目标页码是否有效
+          if (targetPage >= 1) {
+            paginationSettings.currentPage = targetPage; // 直接设置为目标页
+            
+            // 更新分页显示和预览
+            if (currentPageDisplay) currentPageDisplay.textContent = paginationSettings.currentPage;
+            if (prevPageBtn) prevPageBtn.disabled = paginationSettings.currentPage === 1;
+            if (nextPageBtn) nextPageBtn.disabled = paginationSettings.currentPage === paginationSettings.totalPages;
+            
+            updatePreview();
+          }
+          
+          // 重置处理标志，允许下一次点击
+          setTimeout(() => {
+            handlePrevPageClick.isProcessing = false;
+          }, 100);
+        };
+        
+        // 初始化处理标志
+        prevPageBtn.onclick.isProcessing = false;
+      }
       
       // 下一页
-      nextPageBtn.addEventListener('click', () => {
-        // 先更新总页数以确保准确性
-        updatePaginationInfo();
+      if (nextPageBtn) {
+        // 使用onclick属性替代addEventListener，确保只有一个事件监听器
+        nextPageBtn.onclick = function handleNextPageClick() {
+          // 防止事件重复触发的标志
+          if (handleNextPageClick.isProcessing) return;
+          handleNextPageClick.isProcessing = true;
+          
+          console.log('下一页按钮被点击，触发处理函数');
+          
+          // 简单直接的下一页逻辑：只在当前页小于总页数时递增1
+          const targetPage = paginationSettings.currentPage + 1;
+          
+          // 先计算总页数
+          paginationSettings.totalPages = Math.ceil(lyricsData.length / paginationSettings.linesPerPage);
+          
+          // 检查目标页码是否有效
+          if (targetPage <= paginationSettings.totalPages) {
+            paginationSettings.currentPage = targetPage; // 直接设置为目标页
+            
+            // 更新分页显示和预览
+            if (currentPageDisplay) currentPageDisplay.textContent = paginationSettings.currentPage;
+            if (prevPageBtn) prevPageBtn.disabled = paginationSettings.currentPage === 1;
+            if (nextPageBtn) nextPageBtn.disabled = paginationSettings.currentPage === paginationSettings.totalPages;
+            
+            updatePreview();
+          }
+          
+          // 重置处理标志，允许下一次点击
+          setTimeout(() => {
+            handleNextPageClick.isProcessing = false;
+          }, 100);
+        };
         
-        // 然后检查是否可以前进
-        if (paginationSettings.currentPage < paginationSettings.totalPages) {
-          paginationSettings.currentPage++;
-          updatePaginationInfo();
-          updatePreview();
-        }
-      });
+        // 初始化处理标志
+        nextPageBtn.onclick.isProcessing = false;
+      }
       
       // 导出全部
-      exportAllBtn.addEventListener('click', exportAllPages);
+      if (exportAllBtn) {
+        exportAllBtn.addEventListener('click', exportAllPages);
+      }
       
       // 文件名输入
       const fileNameInput = document.getElementById('fileNameInput');
@@ -1119,58 +1052,73 @@
       const importDataBtn = document.getElementById('importDataBtn');
       const dataFileInput = document.getElementById('dataFileInput');
       
-      exportFormatSelect.addEventListener('change', () => {
-        // 更新文件名后缀显示
-        const extension = exportFormatSelect.value;
-        const extensionDisplay = document.querySelector('.text-gray-500.self-center');
-        extensionDisplay.textContent = '.' + extension;
-      });
+      if (exportFormatSelect) {
+        exportFormatSelect.addEventListener('change', () => {
+          // 更新文件名后缀显示
+          const extension = exportFormatSelect.value;
+          const extensionDisplay = document.querySelector('.text-gray-500.self-center');
+          if (extensionDisplay) {
+            extensionDisplay.textContent = '.' + extension;
+          }
+        });
+      }
 
       // 导出数据为JSON文件
-      exportDataBtn.addEventListener('click', () => {
-        if (lyricsData.length === 0) {
-          // 使用更友好的提示方式替代alert
-          showNotification('没有数据可导出', 'warning');
-          return;
-        }
-        
-        // 准备导出数据
-        const exportData = {
-          version: '1.0',
-          exportDate: new Date().toISOString(),
-          songTitle: document.getElementById('songTitleInput').value || '未命名歌曲',
-          singer: document.getElementById('singerInput').value || '',
-          lyricsData: lyricsData,
-          paginationSettings: {
-            linesPerPage: paginationSettings.linesPerPage
-          }
-        };
-        
-        // 创建Blob对象
-        const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
-        const url = URL.createObjectURL(blob);
-        
-        // 创建下载链接
-        const a = document.createElement('a');
-        a.href = url;
-        const songTitle = exportData.songTitle.replace(/[^\w\u4e00-\u9fa5]/gi, '_');
-        a.download = `${songTitle}_简谱数据.json`;
-        
-        // 为了避免事件循环问题，使用setTimeout异步执行下载
-        setTimeout(() => {
-          document.body.appendChild(a);
-          a.click();
-          
-          // 清理
-          setTimeout(() => {
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-            
+      if (exportDataBtn) {
+        console.log('导出按钮事件监听器已绑定');
+        exportDataBtn.addEventListener('click', () => {
+          console.log('导出数据按钮被点击');
+          if (lyricsData.length === 0) {
+            console.log('没有数据可导出');
             // 使用更友好的提示方式替代alert
-            showNotification('数据导出成功！', 'success');
-          }, 100);
-        }, 0);
-      });
+            showNotification('没有数据可导出', 'warning');
+            return;
+          }
+          console.log('准备导出数据，数据长度:', lyricsData.length);
+        
+        // 准备导出数据（移除分页设置）
+          const exportData = {
+            version: '1.0',
+            exportDate: new Date().toISOString(),
+            songTitle: document.getElementById('songTitleInput').value || '未命名歌曲',
+            singer: document.getElementById('singerInput').value || '',
+            lyricsData: lyricsData,
+            globalToneOffset: globalToneOffset,
+            previewSettings: previewSettings
+          };
+          console.log('导出全部数据，不包含分页设置');
+          
+          // 创建Blob对象
+          const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+          const url = URL.createObjectURL(blob);
+          
+          // 创建下载链接
+          const a = document.createElement('a');
+          a.href = url;
+          const songTitle = exportData.songTitle.replace(/[^\w\u4e00-\u9fa5]/gi, '_');
+          a.download = `${songTitle}_简谱数据.json`;
+          
+          console.log('创建下载链接完成');
+          // 为了避免事件循环问题，使用setTimeout异步执行下载
+          setTimeout(() => {
+            document.body.appendChild(a);
+            a.click();
+            console.log('触发下载');
+            
+            // 清理
+            setTimeout(() => {
+              document.body.removeChild(a);
+              URL.revokeObjectURL(url);
+              
+              // 使用更友好的提示方式替代alert
+              showNotification('数据导出成功！', 'success');
+              console.log('导出成功完成');
+            }, 100);
+          }, 0);
+        });
+      } else {
+        console.error('导出按钮元素不存在');
+      }
       
       // 显示通知函数
       function showNotification(message, type = 'info') {
@@ -1279,8 +1227,14 @@
               }
             });
             
-            // 恢复数据
-            lyricsData = validatedLyricsData;
+            // 验证是否有有效数据
+            if (validatedLyricsData.length === 0) {
+              throw new Error('导入的数据中没有有效的歌词行');
+            }
+            
+            // 清空并重新填充lyricsData数组，避免引用问题
+            lyricsData.length = 0;
+            validatedLyricsData.forEach(row => lyricsData.push(row));
             
             // 恢复歌曲信息
             if (importedData.songTitle) {
@@ -1294,6 +1248,17 @@
             if (importedData.paginationSettings && importedData.paginationSettings.linesPerPage) {
               document.getElementById('linesPerPageInput').value = importedData.paginationSettings.linesPerPage;
               paginationSettings.linesPerPage = importedData.paginationSettings.linesPerPage;
+            }
+            
+            // 恢复全局音调偏移（如果有）
+            if (importedData.globalToneOffset !== undefined) {
+              globalToneOffset = importedData.globalToneOffset;
+              updateToneDisplay(); // 更新音调显示
+            }
+            
+            // 恢复预览设置（如果有）
+            if (importedData.previewSettings) {
+              Object.assign(previewSettings, importedData.previewSettings);
             }
             
             // 重置到第一页
@@ -1313,6 +1278,14 @@
             // 更新编辑器和预览 - 按正确顺序调用
             updatePaginationInfo(); // 先更新分页信息
             renderNotesEditor();    // 再渲染编辑器
+            
+            // 更新预览区域宽高比（如果有自定义宽高）
+            if (previewSettings.width && previewSettings.height) {
+              updatePreviewAreaAspectRatio(true);
+            } else {
+              updatePreviewAreaAspectRatio();
+            }
+            
             updatePreview();        // 最后更新预览
             
             showNotification('数据导入成功！', 'success');
@@ -1351,7 +1324,7 @@
     } else {
       // 预设宽高比
       const ratioParts = previewSettings.aspectRatio.split(':');
-      const ratio = ratioParts[0] / ratioParts[1];
+      const ratio = ratioParts[1] / ratioParts[0];
         
       // 使用style属性设置宽高比
       previewArea.style.aspectRatio = ratio;
@@ -1365,21 +1338,24 @@
 
   // 更新分页信息
   function updatePaginationInfo() {
-    if (lyricsData.length === 0) {
-      pageInfo.classList.add('hidden');
-      return;
+      console.log('updatePaginationInfo函数被调用');
+      if (lyricsData.length === 0) {
+        if (pageInfo) pageInfo.classList.add('hidden');
+        return;
+      }
+      
+      paginationSettings.totalPages = Math.ceil(lyricsData.length / paginationSettings.linesPerPage);
+      
+      // 添加空值检查，防止引用不存在的元素
+      if (currentPageDisplay) currentPageDisplay.textContent = paginationSettings.currentPage;
+      if (totalPagesDisplay) totalPagesDisplay.textContent = paginationSettings.totalPages;
+      
+      // 更新按钮状态
+      if (prevPageBtn) prevPageBtn.disabled = paginationSettings.currentPage === 1;
+      if (nextPageBtn) nextPageBtn.disabled = paginationSettings.currentPage === paginationSettings.totalPages;
+      
+      if (pageInfo) pageInfo.classList.remove('hidden');
     }
-    
-    paginationSettings.totalPages = Math.ceil(lyricsData.length / paginationSettings.linesPerPage);
-    currentPageDisplay.textContent = paginationSettings.currentPage;
-    totalPagesDisplay.textContent = paginationSettings.totalPages;
-    
-    // 更新按钮状态
-    prevPageBtn.disabled = paginationSettings.currentPage === 1;
-    nextPageBtn.disabled = paginationSettings.currentPage === paginationSettings.totalPages;
-    
-    pageInfo.classList.remove('hidden');
-  }
 
     // 分割歌词为单个字符，并创建对应的简谱数据结构
     function splitLyrics() {
@@ -1409,14 +1385,14 @@
           // 将每行分割为单个字符
           for (let i = 0; i < trimmedLine.length; i++) {
             const char = trimmedLine[i];
-            // 跳过空字符
-            if (char.trim() === '') continue;
             
+            // 不跳过空格，但标记为不需要简谱的字符
             rowData.characters.push({
               text: char,
               note: '',
               octave: 0,
-              index: i
+              index: i,
+              isSpace: char.trim() === ''
             });
           }
           
@@ -1457,17 +1433,29 @@
         
         // 为每个字符创建音符输入框
         row.characters.forEach((charObj, charIndex) => {
-          const noteValue = charObj.note || '';
-          const noteClass = noteValue ? '' : 'placeholder-gray-400';
-          
-          html += `
-            <div class="note-item flex flex-col items-center" data-index="${charIndex}">
-              <input type="text" maxlength="1" value="${noteValue}" 
-                class="note-input w-8 h-8 text-center text-lg font-medium border border-gray-300 rounded-md ${noteClass} focus:outline-none focus:note-input-focus"
-                data-row="${rowIndex}" data-index="${charIndex}">
-              <span class="text-sm mt-1">${charObj.text}</span>
-            </div>
-          `;
+          // 对于空格字符，显示为特殊的占位符，不提供输入框
+          if (charObj.isSpace) {
+            html += `
+              <div class="note-item flex flex-col items-center" style="min-width: 30px;" data-index="${charIndex}">
+                <div class="w-8 h-8 bg-gray-100 rounded-md flex items-center justify-center text-gray-400">
+                  <i class="fa fa-space-shuttle"></i>
+                </div>
+                <span class="text-sm mt-1">${charObj.text === ' ' ? '&nbsp;' : charObj.text}</span>
+              </div>
+            `;
+          } else {
+            const noteValue = charObj.note || '';
+            const noteClass = noteValue ? '' : 'placeholder-gray-400';
+            
+            html += `
+              <div class="note-item flex flex-col items-center" data-index="${charIndex}">
+                <input type="text" maxlength="1" value="${noteValue}" 
+                  class="note-input w-8 h-8 text-center text-lg font-medium border border-gray-300 rounded-md ${noteClass} focus:outline-none focus:note-input-focus"
+                  data-row="${rowIndex}" data-index="${charIndex}">
+                <span class="text-sm mt-1">${charObj.text}</span>
+              </div>
+            `;
+          }
         });
         
         html += `
@@ -1478,7 +1466,7 @@
       
       notesEditor.innerHTML = html;
       
-      // 添加事件监听
+      // 为非空格字符的输入框添加事件监听
       document.querySelectorAll('.note-input').forEach(input => {
         input.addEventListener('input', handleNoteInput);
         input.addEventListener('keydown', handleNoteKeyDown);
@@ -1521,6 +1509,8 @@
     // 处理音符输入框的键盘事件
     function handleNoteKeyDown(e) {
       const input = e.target;
+      const rowIndex = parseInt(input.dataset.row);
+      const charIndex = parseInt(input.dataset.index);
       
       // 处理+键（升调）
       if (e.key === '+' || e.key === '=') {
@@ -1594,25 +1584,40 @@
           }
       }
       
-      // 处理Delete键
+      // 处理Delete键和Backspace键
       if (e.key === 'Delete' || e.key === 'Backspace') {
-        if (!input.value) {
-          // 如果当前输入框为空，删除前一个音符
-          focusPreviousNoteInput(rowIndex, charIndex);
-          const prevInput = document.querySelector(`.note-input[data-row="${rowIndex}"][data-index="${charIndex - 1}"]`);
-          if (prevInput) {
-            prevInput.value = '';
-            if (lyricsData[rowIndex] && lyricsData[rowIndex].characters[charIndex - 1]) {
-              lyricsData[rowIndex].characters[charIndex - 1].note = '';
-              lyricsData[rowIndex].characters[charIndex - 1].octave = 0;
+        e.preventDefault(); // 阻止默认的删除行为
+        
+        if (e.key === 'Backspace') {
+          if (!input.value) {
+            // 如果当前输入框为空，删除前一个音符并自动往前移动
+            focusPreviousNoteInput(rowIndex, charIndex);
+            const prevInput = document.querySelector(`.note-input[data-row="${rowIndex}"][data-index="${charIndex - 1}"]`);
+            if (prevInput) {
+              prevInput.value = '';
+              if (lyricsData[rowIndex] && lyricsData[rowIndex].characters[charIndex - 1]) {
+                lyricsData[rowIndex].characters[charIndex - 1].note = '';
+                lyricsData[rowIndex].characters[charIndex - 1].octave = 0;
+              }
+              updatePreview();
+            }
+          } else {
+            // 清空当前音符
+            input.value = '';
+            if (lyricsData[rowIndex] && lyricsData[rowIndex].characters[charIndex]) {
+              lyricsData[rowIndex].characters[charIndex].note = '';
+              lyricsData[rowIndex].characters[charIndex].octave = 0;
             }
             updatePreview();
           }
-        } else {
-          // 清空当前音符的八度
+        } else if (e.key === 'Delete') {
+          // Delete键行为：清空当前音符
+          input.value = '';
           if (lyricsData[rowIndex] && lyricsData[rowIndex].characters[charIndex]) {
+            lyricsData[rowIndex].characters[charIndex].note = '';
             lyricsData[rowIndex].characters[charIndex].octave = 0;
           }
+          updatePreview();
         }
       }
       
@@ -1676,12 +1681,15 @@
     function focusNextNoteInput(rowIndex, charIndex) {
       const currentRow = lyricsData[rowIndex];
       
-      // 如果当前行还有下一个输入框
-      if (charIndex < currentRow.characters.length - 1) {
-        const nextInput = document.querySelector(`.note-input[data-row="${rowIndex}"][data-index="${charIndex + 1}"]`);
-        if (nextInput) {
-          nextInput.focus();
-          return;
+      // 查找当前行中的下一个非空格字符的输入框
+      for (let i = charIndex + 1; i < currentRow.characters.length; i++) {
+        // 检查字符是否非空格
+        if (!currentRow.characters[i].isSpace) {
+          const nextInput = document.querySelector(`.note-input[data-row="${rowIndex}"][data-index="${i}"]`);
+          if (nextInput) {
+            nextInput.focus();
+            return;
+          }
         }
       }
       
@@ -1690,22 +1698,32 @@
         return;
       }
       
-      // 否则跳转到下一行的第一个输入框
+      // 跳转到下一行的第一个非空格字符的输入框
       const nextRowIndex = rowIndex + 1;
-      const nextInput = document.querySelector(`.note-input[data-row="${nextRowIndex}"][data-index="0"]`);
-      if (nextInput) {
-        nextInput.focus();
+      const nextRow = lyricsData[nextRowIndex];
+      
+      for (let i = 0; i < nextRow.characters.length; i++) {
+        if (!nextRow.characters[i].isSpace) {
+          const nextInput = document.querySelector(`.note-input[data-row="${nextRowIndex}"][data-index="${i}"]`);
+          if (nextInput) {
+            nextInput.focus();
+            return;
+          }
+        }
       }
     }
 
     // 聚焦到上一个音符输入框
     function focusPreviousNoteInput(rowIndex, charIndex) {
-      // 如果当前行还有上一个输入框
-      if (charIndex > 0) {
-        const prevInput = document.querySelector(`.note-input[data-row="${rowIndex}"][data-index="${charIndex - 1}"]`);
-        if (prevInput) {
-          prevInput.focus();
-          return;
+      // 查找当前行中的上一个非空格字符的输入框
+      for (let i = charIndex - 1; i >= 0; i--) {
+        // 检查字符是否非空格
+        if (!lyricsData[rowIndex].characters[i].isSpace) {
+          const prevInput = document.querySelector(`.note-input[data-row="${rowIndex}"][data-index="${i}"]`);
+          if (prevInput) {
+            prevInput.focus();
+            return;
+          }
         }
       }
       
@@ -1714,14 +1732,18 @@
         return;
       }
       
-      // 否则跳转到上一行的最后一个输入框
+      // 跳转到上一行的最后一个非空格字符的输入框
       const prevRowIndex = rowIndex - 1;
       const prevRow = lyricsData[prevRowIndex];
-      const lastIndex = prevRow.characters.length - 1;
       
-      const prevInput = document.querySelector(`.note-input[data-row="${prevRowIndex}"][data-index="${lastIndex}"]`);
-      if (prevInput) {
-        prevInput.focus();
+      for (let i = prevRow.characters.length - 1; i >= 0; i--) {
+        if (!prevRow.characters[i].isSpace) {
+          const prevInput = document.querySelector(`.note-input[data-row="${prevRowIndex}"][data-index="${i}"]`);
+          if (prevInput) {
+            prevInput.focus();
+            return;
+          }
+        }
       }
     }
 
@@ -1765,6 +1787,7 @@
 
     // 更新预览
     function updatePreview() {
+      console.log('updatePreview函数被调用，当前页码:', paginationSettings.currentPage);
       if (lyricsData.length === 0) {
         previewArea.innerHTML = `
           <div class="text-gray-500 text-center py-10">
@@ -1811,7 +1834,7 @@
       
       if (songTitle) {
         html += `
-          <div class="text-center mb-8">
+          <div class="text-center mt-8 mb-4">
             <h2 class="text-2xl font-bold" style="color: ${previewSettings.textColor}">${songTitle}</h2>
             ${singer ? `<p class="text-gray-600">${singer}</p>` : ''}
           </div>
@@ -1821,62 +1844,72 @@
       // 为当前页的每行创建预览
       currentPageRows.forEach(row => {
         html += `
-          <div class="flex flex-wrap justify-center gap-4 mb-6">
+          <div class="flex flex-wrap justify-center gap-2 mb-6">
         `;
         
         // 为每个字符创建音符预览
         row.characters.forEach(charObj => {
-          const note = charObj.note;
-          const octave = charObj.octave;
-          
-          let noteHtml = '';
-          
-          if (note) {
-            // 使用5行布局结构实现音调显示
-              let dotColor = previewSettings.noteColor;
-              
-              // 根据octave值决定显示哪些行的圆点
-              const hasPlus2Dot = octave >= 2;
-              const hasPlus1Dot = octave >= 1;
-              const hasMinus1Dot = octave <= -1;
-              
-              // 计算与字体大小相关的动态尺寸
-              const dotSize = Math.round(previewSettings.fontSize * 0.6);
-              const rowHeight = Math.round(previewSettings.fontSize * 0.9);
-              const containerWidth = Math.round(previewSettings.fontSize * 1.5);
-              const containerHeight = rowHeight * 4;
-              
-              noteHtml = `
-                <div class="note-container" style="display: flex; flex-direction: column; align-items: center; width: ${containerWidth}px; height: ${containerHeight}px;">
-                  <!-- +2音调 -->
-                  <div class="tone-row" style="height: ${rowHeight}px; display: flex; align-items: center; justify-content: center;">
-                    <span style="color: ${hasPlus2Dot ? dotColor : 'transparent'}; font-size: ${dotSize}px;">●</span>
-                  </div>
-                  <!-- +1音调 -->
-                  <div class="tone-row" style="height: ${rowHeight}px; display: flex; align-items: center; justify-content: center;">
-                    <span style="color: ${hasPlus1Dot ? dotColor : 'transparent'}; font-size: ${dotSize}px;">●</span>
-                  </div>
-                  <!-- 音符数字 -->
-                  <div class="note-row" style="height: ${rowHeight}px; display: flex; align-items: center; justify-content: center;">
-                    <span class="note-number font-medium" style="color: ${previewSettings.noteColor}; font-size: ${previewSettings.fontSize * 1.2}px;">${note}</span>
-                  </div>
-                  <!-- -1音调 -->
-                  <div class="tone-row" style="height: ${rowHeight}px; display: flex; align-items: center; justify-content: center;">
-                    <span style="color: ${hasMinus1Dot ? dotColor : 'transparent'}; font-size: ${dotSize}px;">●</span>
-                  </div>
-                </div>
-              `;
+          // 对于空格字符，显示为特殊的间距
+          if (charObj.isSpace) {
+            html += `
+              <div class="flex flex-col items-center" style="width: ${Math.round(previewSettings.fontSize * 0.8)}px;">
+                <div style="height: ${previewSettings.fontSize * 3}px;"></div>
+                <span style="color: ${previewSettings.textColor}; font-size: ${previewSettings.fontSize}px;">&nbsp;</span>
+              </div>
+            `;
           } else {
-            // 如果没有音符，显示一个占位符
-            noteHtml = `<div class="w-8 h-8"></div>`;
+            const note = charObj.note;
+            const octave = charObj.octave;
+            
+            let noteHtml = '';
+            
+            if (note) {
+              // 使用5行布局结构实现音调显示
+                let dotColor = previewSettings.noteColor;
+                
+                // 根据octave值决定显示哪些行的圆点
+                const hasPlus2Dot = octave >= 2;
+                const hasPlus1Dot = octave >= 1;
+                const hasMinus1Dot = octave <= -1;
+                
+                // 计算与字体大小相关的动态尺寸
+                const dotSize = Math.round(previewSettings.fontSize * 0.6);
+                const rowHeight = Math.round(previewSettings.fontSize * 0.9);
+                const containerWidth = Math.round(previewSettings.fontSize * 1.5);
+                const containerHeight = rowHeight * 4;
+                
+                noteHtml = `
+                  <div class="note-container" style="display: flex; flex-direction: column; align-items: center; width: ${containerWidth}px; height: ${containerHeight}px;">
+                    <!-- +2音调 -->
+                    <div class="tone-row" style="height: ${rowHeight}px; display: flex; align-items: center; justify-content: center;">
+                      <span style="color: ${hasPlus2Dot ? dotColor : 'transparent'}; font-size: ${dotSize}px;">●</span>
+                    </div>
+                    <!-- +1音调 -->
+                    <div class="tone-row" style="height: ${rowHeight}px; display: flex; align-items: center; justify-content: center;">
+                      <span style="color: ${hasPlus1Dot ? dotColor : 'transparent'}; font-size: ${dotSize}px;">●</span>
+                    </div>
+                    <!-- 音符数字 -->
+                    <div class="note-row" style="height: ${rowHeight}px; display: flex; align-items: center; justify-content: center;">
+                      <span class="note-number font-medium" style="color: ${previewSettings.noteColor}; font-size: ${previewSettings.fontSize * 1.2}px;">${note}</span>
+                    </div>
+                    <!-- -1音调 -->
+                    <div class="tone-row" style="height: ${rowHeight}px; display: flex; align-items: center; justify-content: center;">
+                      <span style="color: ${hasMinus1Dot ? dotColor : 'transparent'}; font-size: ${dotSize}px;">●</span>
+                    </div>
+                  </div>
+                `;
+            } else {
+              // 如果没有音符，显示一个占位符
+              noteHtml = `<div style="height: ${previewSettings.fontSize * 3}px;"></div>`;
+            }
+            
+            html += `
+              <div class="flex flex-col items-center">
+                ${noteHtml}
+                <span style="color: ${previewSettings.textColor}; font-size: ${previewSettings.fontSize}px; margin-top: 4px;">${charObj.text}</span>
+              </div>
+            `;
           }
-          
-          html += `
-            <div class="flex flex-col items-center">
-              ${noteHtml}
-              <span style="color: ${previewSettings.textColor}; font-size: ${previewSettings.fontSize}px; margin-top: 8px;">${charObj.text}</span>
-            </div>
-          `;
         });
         
         html += `
@@ -1894,24 +1927,24 @@
         return;
       }
       
-      // 导出前先从输入框读取最新的每页行数设置
+      // 导出前先从输入框读取最新的每页行数设置，但不修改全局paginationSettings
       const linesPerPageInput = document.getElementById('linesPerPageInput');
-      const linesPerPage = parseInt(linesPerPageInput.value);
-      if (!isNaN(linesPerPage) && linesPerPage > 0) {
-        paginationSettings.linesPerPage = linesPerPage;
+      let exportLinesPerPage = parseInt(linesPerPageInput.value);
+      if (isNaN(exportLinesPerPage) || exportLinesPerPage <= 0) {
+        exportLinesPerPage = paginationSettings.linesPerPage; // 如果无效，使用当前设置
       }
       
-      // 获取导出格式和分辨率
-      const format = document.getElementById('exportFormatSelect').value;
-      const resolution = parseInt(document.getElementById('resolutionSelect').value);
+      // 设置默认导出格式和分辨率
+      const format = 'png'; // 默认PNG格式
+      const resolution = 3; // 默认超清(3x)分辨率
       
       // 获取歌曲信息
       const songTitle = document.getElementById('songTitleInput').value || '简谱';
       const singer = document.getElementById('singerInput').value;
       
       // 计算当前页显示的行范围
-      const startIndex = (pageNumber - 1) * paginationSettings.linesPerPage;
-      const endIndex = Math.min(startIndex + paginationSettings.linesPerPage, lyricsData.length);
+      const startIndex = (pageNumber - 1) * exportLinesPerPage;
+      const endIndex = Math.min(startIndex + exportLinesPerPage, lyricsData.length);
       const currentPageRows = lyricsData.slice(startIndex, endIndex);
       
       // 创建文件名
@@ -1954,7 +1987,7 @@
       // 添加歌曲信息标题
       if (songTitle) {
         exportHtml += `
-          <div class="text-center mb-8">
+          <div class="text-center mt-8 mb-4">
             <h2 class="text-2xl font-bold" style="color: ${previewSettings.textColor}">${songTitle}</h2>
             ${singer ? `<p class="text-gray-600">${singer}</p>` : ''}
           </div>
@@ -1964,56 +1997,65 @@
       // 为当前页的每行创建预览
       currentPageRows.forEach(row => {
         exportHtml += `
-          <div class="flex flex-wrap justify-center gap-4 mb-6">
+          <div class="flex flex-wrap justify-center gap-2 mb-6">
         `;
         
         // 为每个字符创建音符预览
         row.characters.forEach(charObj => {
-          const note = charObj.note;
-          const octave = charObj.octave;
-          
-          let noteHtml = '';
-          
-          if (note) {
-            // 使用5行布局结构实现音调显示 - 与预览部分保持一致
-            let dotColor = previewSettings.noteColor;
-            
-            // 根据octave值决定显示哪些行的圆点
-            const hasPlus2Dot = octave >= 2;
-            const hasPlus1Dot = octave >= 1;
-            const hasMinus1Dot = octave <= -1;
-            
-            noteHtml = `
-                <div class="note-container" style="display: flex; flex-direction: column; align-items: center; width: 20px; height: 45px;">
-                  <!-- +2音调 -->
-                  <div class="tone-row" style="height: 14px; display: flex; align-items: center; justify-content: center;">
-                    <span style="color: ${hasPlus2Dot ? dotColor : 'transparent'}; font-size: 10px;">●</span>
-                  </div>
-                  <!-- +1音调 -->
-                  <div class="tone-row" style="height: 14px; display: flex; align-items: center; justify-content: center;">
-                    <span style="color: ${hasPlus1Dot ? dotColor : 'transparent'}; font-size: 10px;">●</span>
-                  </div>
-                  <!-- 音符数字 -->
-                  <div class="note-row" style="height: 14px; display: flex; align-items: center; justify-content: center;">
-                    <span class="note-number text-xl font-medium" style="color: ${previewSettings.noteColor};">${note}</span>
-                  </div>
-                  <!-- -1音调 -->
-                  <div class="tone-row" style="height: 14px; display: flex; align-items: center; justify-content: center;">
-                    <span style="color: ${hasMinus1Dot ? dotColor : 'transparent'}; font-size: 10px;">●</span>
-                  </div>
-                </div>
-              `;
+          // 对于空格字符，显示为特殊的间距
+          if (charObj.isSpace) {
+            exportHtml += `
+              <div class="flex flex-col items-center" style="width: 12px;">
+                <div style="height: 45px;"></div>
+                <span style="font-size: 16px;">&nbsp;</span>
+              </div>
+            `;
           } else {
-            // 如果没有音符，显示一个占位符
-            noteHtml = `<div class="w-8 h-8"></div>`;
+            const note = charObj.note;
+            const octave = charObj.octave;
+            
+            let noteHtml = '';
+            
+            if (note) {
+              // 使用5行布局结构实现音调显示 - 与预览部分保持一致
+              let dotColor = previewSettings.noteColor;
+              
+              // 根据octave值决定显示哪些行的圆点
+              const hasPlus2Dot = octave >= 2;
+              const hasPlus1Dot = octave >= 1;
+              const hasMinus1Dot = octave <= -1;
+              
+              noteHtml = `
+                  <div class="note-container" style="display: flex; flex-direction: column; align-items: center; width: 20px; height: 45px;">
+                    <!-- +2音调 -->
+                    <div class="tone-row" style="height: 14px; display: flex; align-items: center; justify-content: center;">
+                      <span style="color: ${hasPlus2Dot ? dotColor : 'transparent'}; font-size: 10px;">●</span>
+                    </div>
+                    <!-- +1音调 -->
+                    <div class="tone-row" style="height: 14px; display: flex; align-items: center; justify-content: center;">
+                      <span style="color: ${hasPlus1Dot ? dotColor : 'transparent'}; font-size: 10px;">●</span>
+                    </div>
+                    <!-- 音符数字 -->
+                    <div class="note-row" style="height: 14px; display: flex; align-items: center; justify-content: center;">
+                      <span class="note-number text-xl font-medium" style="color: ${previewSettings.noteColor};">${note}</span>
+                    </div>
+                    <!-- -1音调 -->
+                    <div class="tone-row" style="height: 14px; display: flex; align-items: center; justify-content: center;">
+                      <span style="color: ${hasMinus1Dot ? dotColor : 'transparent'}; font-size: 10px;">●</span>
+                    </div>
+                  </div>
+                `;
+            } else {
+              // 如果没有音符，显示一个占位符
+              noteHtml = `<div style="height: 45px;"></div>`;
+            }
+            
+            exportHtml += `
+              <div class="flex flex-col items-center">
+                ${noteHtml}
+                <span class="text-base mt-1" style="color: ${previewSettings.textColor}">${charObj.text}</span>
+              </div>`;
           }
-          
-          exportHtml += `
-            <div class="flex flex-col items-center">
-              ${noteHtml}
-              <span class="text-base mt-2" style="color: ${previewSettings.textColor}">${charObj.text}</span>
-            </div>
-          `;
         });
         
         exportHtml += `
@@ -2087,15 +2129,15 @@
         return;
       }
       
-      // 导出前先从输入框读取最新的每页行数设置
+      // 导出前先从输入框读取最新的每页行数设置，但不修改全局paginationSettings
       const linesPerPageInput = document.getElementById('linesPerPageInput');
-      const linesPerPage = parseInt(linesPerPageInput.value);
-      if (!isNaN(linesPerPage) && linesPerPage > 0) {
-        paginationSettings.linesPerPage = linesPerPage;
+      let exportLinesPerPage = parseInt(linesPerPageInput.value);
+      if (isNaN(exportLinesPerPage) || exportLinesPerPage <= 0) {
+        exportLinesPerPage = paginationSettings.linesPerPage; // 如果无效，使用当前设置
       }
       
-      // 更新总页数
-      paginationSettings.totalPages = Math.ceil(lyricsData.length / paginationSettings.linesPerPage);
+      // 计算导出使用的总页数，并更新显示
+      paginationSettings.totalPages = Math.ceil(lyricsData.length / exportLinesPerPage);
       
       if (paginationSettings.totalPages === 1) {
         // 只有一页，直接导出
@@ -2187,7 +2229,34 @@
           // 恢复预览设置
           if (cache.previewSettings) {
             Object.assign(previewSettings, cache.previewSettings);
-
+            
+            // 更新UI控件以反映缓存中的设置
+            if (fontSelect) fontSelect.value = previewSettings.font || 'Maple Mono NF CN';
+            if (fontSizeSlider) {
+              fontSizeSlider.value = previewSettings.fontSize || 24;
+              if (fontSizeDisplay) fontSizeDisplay.textContent = previewSettings.fontSize || 24;
+            }
+            if (toggleBoldBtn) {
+              toggleBoldBtn.classList.toggle('bg-primary/10', previewSettings.bold);
+              toggleBoldBtn.classList.toggle('border-primary', previewSettings.bold);
+              toggleBoldBtn.classList.toggle('text-primary', previewSettings.bold);
+              toggleBoldBtn.classList.toggle('text-gray-600', !previewSettings.bold);
+            }
+            if (noteColorSelect) noteColorSelect.value = previewSettings.noteColor || '#000000';
+            if (noteColorPicker) noteColorPicker.value = previewSettings.noteColor || '#000000';
+            if (textColorSelect) textColorSelect.value = previewSettings.textColor || '#333333';
+            if (textColorPicker) textColorPicker.value = previewSettings.textColor || '#333333';
+            if (aspectRatioSelect) {
+              if (previewSettings.width && previewSettings.height) {
+                aspectRatioSelect.value = 'custom';
+                if (customRatioInputs) customRatioInputs.classList.remove('hidden');
+                if (widthInput) widthInput.value = previewSettings.width;
+                if (heightInput) heightInput.value = previewSettings.height;
+              } else {
+                aspectRatioSelect.value = previewSettings.aspectRatio || '4:3';
+                if (customRatioInputs) customRatioInputs.classList.add('hidden');
+              }
+            }
           }
           
           // 如果有歌词，自动分割以恢复数据结构
