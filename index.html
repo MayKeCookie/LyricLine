@@ -77,39 +77,7 @@
   </style>
   <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
   
-  <script>
-    // 使notesEditor的高度与预览区域高度一致的函数
-    function syncNotesEditorHeight() {
-      const previewArea = document.getElementById('previewArea');
-      const notesEditor = document.getElementById('notesEditor');
-      
-      if (previewArea && notesEditor) {
-        const previewHeight = previewArea.offsetHeight;
-        // 设置notesEditor的高度为预览区域的高度
-        notesEditor.style.height = `${previewHeight}px`;
-      }
-    }
-    
-    // 页面加载完成后同步高度
-    document.addEventListener('DOMContentLoaded', function() {
-      syncNotesEditorHeight();
-      
-      // 监听窗口大小变化，重新同步高度
-      window.addEventListener('resize', syncNotesEditorHeight);
-      
-      // 监听宽高比变化，重新同步高度
-      const aspectRatioSelect = document.getElementById('aspectRatioSelect');
-      const applyRatioBtn = document.getElementById('applyRatioBtn');
-      
-      if (aspectRatioSelect) {
-        aspectRatioSelect.addEventListener('change', syncNotesEditorHeight);
-      }
-      
-      if (applyRatioBtn) {
-        applyRatioBtn.addEventListener('click', syncNotesEditorHeight);
-      }
-    });
-  </script>
+
   
   <!-- Tailwind 配置 -->
   <script>
@@ -328,9 +296,9 @@
             
             <!-- 自定义宽高比输入框 -->
             <div id="customRatioInputs" class="hidden mb-3 flex items-center space-x-2">
-              <input type="number" id="widthInput" placeholder="宽度" min="100" value="800" class="w-24 p-1 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-primary/50">
+              <input type="number" id="widthInput" placeholder="宽度" min="100" value="600" class="w-24 p-1 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-primary/50">
               <span class="text-gray-600">:</span>
-              <input type="number" id="heightInput" placeholder="高度" min="100" value="600" class="w-24 p-1 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-primary/50">
+              <input type="number" id="heightInput" placeholder="高度" min="100" value="800" class="w-24 p-1 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-primary/50">
               <button id="applyRatioBtn" class="bg-primary text-white px-2 py-1 rounded-md text-xs btn-hover">
                 <i class="fa fa-check mr-1"></i>应用
               </button>
@@ -363,7 +331,7 @@
             <h2 class="text-lg font-semibold text-neutral flex items-center mb-4">
               <i class="fa fa-edit text-primary mr-2"></i>简谱编辑区域
             </h2>
-            <div id="notesEditor" class="space-y-3 overflow-y-auto p-2">
+            <div id="notesEditor" class="space-y-3 overflow-y-auto p-2" style="height: 1100px;">
               <div class="text-gray-500 text-center py-10 border-2 border-dashed border-gray-200 rounded-lg">
                 <p>请先输入歌词并点击"分割歌词"按钮</p>
               </div>
@@ -2026,21 +1994,21 @@
               const hasMinus1Dot = octave <= -1;
               
               noteHtml = `
-                  <div class="note-container" style="display: flex; flex-direction: column; align-items: center; width: 20px; height: 45px;">
+                  <div class="note-container" style="display: flex; flex-direction: column; align-items: center; width: 20px; height: 64px;">
                     <!-- +2音调 -->
-                    <div class="tone-row" style="height: 14px; display: flex; align-items: center; justify-content: center;">
+                    <div class="tone-row" style="height: 16px; display: flex; align-items: center; justify-content: center;">
                       <span style="color: ${hasPlus2Dot ? dotColor : 'transparent'}; font-size: 10px;">●</span>
                     </div>
                     <!-- +1音调 -->
-                    <div class="tone-row" style="height: 14px; display: flex; align-items: center; justify-content: center;">
+                    <div class="tone-row" style="height: 16px; display: flex; align-items: center; justify-content: center;">
                       <span style="color: ${hasPlus1Dot ? dotColor : 'transparent'}; font-size: 10px;">●</span>
                     </div>
                     <!-- 音符数字 -->
-                    <div class="note-row" style="height: 14px; display: flex; align-items: center; justify-content: center;">
+                    <div class="note-row" style="height: 16px; display: flex; align-items: center; justify-content: center;">
                       <span class="note-number text-xl font-medium" style="color: ${previewSettings.noteColor};">${note}</span>
                     </div>
                     <!-- -1音调 -->
-                    <div class="tone-row" style="height: 14px; display: flex; align-items: center; justify-content: center;">
+                    <div class="tone-row" style="height: 16px; display: flex; align-items: center; justify-content: center;">
                       <span style="color: ${hasMinus1Dot ? dotColor : 'transparent'}; font-size: 10px;">●</span>
                     </div>
                   </div>
